@@ -1,6 +1,6 @@
 -- Run after creating a Supabase Auth user through Dashboard or auth.admin.createUser.
 -- Promote the user without storing any password in source control.
-update public.profiles set role = 'admin' where email = 'nguyentrung2590@gmail.com';
+update public.profiles set role = 'admin' where email = 'admin@example.com';
 
 insert into public.categories (name, slug, description) values
   ('Tin công nghệ', 'tin-cong-nghe', 'Những chuyển động mới của thế giới công nghệ.'),
