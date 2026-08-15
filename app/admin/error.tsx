@@ -1,0 +1,4 @@
+"use client";
+import { useEffect } from "react";
+import { RotateCcw } from "lucide-react";
+export default function AdminError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) { useEffect(() => { console.error(error); }, [error]); return <div className="grid min-h-[50vh] place-items-center"><div className="max-w-md text-center"><p className="text-xs font-bold uppercase tracking-[.16em] text-[#b42318]">Không thể hoàn tất thao tác</p><h1 className="display mt-3 text-4xl font-bold">Khu vực quản trị gặp lỗi</h1><p className="mt-3 text-sm leading-6 text-[#667085]">Dữ liệu chưa được tải đúng cách. Hãy thử lại; nếu lỗi tiếp diễn, kiểm tra kết nối Supabase.</p><button onClick={reset} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#101828] px-4 py-3 text-sm font-bold text-white"><RotateCcw size={16}/>Thử lại</button></div></div>; }

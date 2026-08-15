@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+:root { --ink: #101828; --muted: #667085; --line: #e6eaf0; --paper: #ffffff; --canvas: #f7f9fc; --accent: #4062ff; --acid: #ccff00; --soft-accent: #edf0ff; }
+* { border-color: var(--line); }
+html { scroll-behavior: smooth; }
+body { background: var(--canvas); color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
+a { text-decoration: none; }
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 55%, white); outline-offset: 3px; }
+::selection { background: var(--acid); color: var(--ink); }
+.container { width: min(100% - 2rem, 1220px); margin-inline: auto; }
+.display { font-family: Georgia, "Times New Roman", serif; letter-spacing: -0.045em; }
+.prose-news { color: #344054; font-size: 1.12rem; line-height: 1.86; }
+.prose-news h2, .prose-news h3 { color: var(--ink); font-family: Georgia, "Times New Roman", serif; font-weight: 700; line-height: 1.15; letter-spacing: -0.03em; margin-top: 2.6rem; margin-bottom: 1rem; }
+.prose-news h2 { font-size: 2rem; } .prose-news h3 { font-size: 1.45rem; }
+.prose-news p { margin: 1.2rem 0; } .prose-news strong { color: var(--ink); } .prose-news a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.prose-news ul, .prose-news ol { padding-left: 1.5rem; margin: 1rem 0; } .prose-news ul { list-style: disc; } .prose-news ol { list-style: decimal; }
+.prose-news blockquote { border-left: 3px solid var(--accent); padding: 0.4rem 0 0.4rem 1.25rem; color: #475467; font-size: 1.25rem; font-family: Georgia, "Times New Roman", serif; margin: 2rem 0; }
+.prose-news pre { background: #101828; color: #e8eef7; overflow-x: auto; padding: 1.25rem; border-radius: 0.9rem; font-size: 0.9rem; line-height: 1.6; margin: 1.5rem 0; }
+.prose-news img { border-radius: 1rem; width: 100%; height: auto; margin: 1.5rem 0; }
+.news-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1.25rem; }
+@media (max-width: 767px) { .container { width: min(100% - 1.25rem, 1220px); } .prose-news { font-size: 1.04rem; } .prose-news h2 { font-size: 1.65rem; } }

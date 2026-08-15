@@ -1,0 +1,4 @@
+"use client";
+import { useEffect } from "react";
+import { RotateCcw } from "lucide-react";
+export default function SiteError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) { useEffect(() => { console.error(error); }, [error]); return <main className="container grid min-h-[55vh] place-items-center py-12"><div className="max-w-md text-center"><p className="text-xs font-bold uppercase tracking-[.16em] text-[#4062ff]">Tín hiệu bị ngắt</p><h1 className="display mt-3 text-4xl font-bold">Không thể tải nội dung</h1><p className="mt-3 text-sm leading-6 text-[#667085]">Kết nối dữ liệu vừa gặp trục trặc. Bạn có thể thử lại hoặc quay lại sau ít phút.</p><button onClick={reset} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#101828] px-4 py-3 text-sm font-bold text-white"><RotateCcw size={16}/>Thử lại</button></div></main>; }
