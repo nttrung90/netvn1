@@ -1,0 +1,22 @@
+# Project TODO
+
+- [x] Rà soát cấu trúc dự án hiện hữu và các thành phần dựng sẵn có thể tái sử dụng.
+- [x] Xác lập nhận diện giao diện riêng cho cổng tin tức công nghệ, lấy cảm hứng bố cục nhưng không sao chép trang tham khảo.
+- [x] Thiết kế schema Supabase gồm profiles, posts, categories, tags và post_tags cùng index, ràng buộc, trigger và RLS policies.
+- [x] Bổ sung cấu hình Supabase Auth, kiểm tra role admin phía máy chủ và luồng đăng nhập/đăng xuất.
+- [x] Xây dựng lớp dữ liệu và endpoint/procedure an toàn cho bài viết, chuyên mục, tags, tìm kiếm, phân trang và thống kê lượt xem.
+- [x] Xây dựng trang chủ responsive gồm header, điều hướng chuyên mục, bài nổi bật, bài mới, các khối theo chuyên mục và sidebar desktop.
+- [x] Xây dựng danh sách bài viết, trang chuyên mục, tìm kiếm và phân trang theo URL thân thiện SEO.
+- [x] Xây dựng trang bài viết với nội dung định dạng, metadata, tác giả, thẻ, bài liên quan, chia sẻ và dữ liệu có cấu trúc.
+- [x] Xây dựng các thành phần SEO gồm metadata động, canonical URL, sitemap, robots và Open Graph/Twitter Card.
+- [x] Xây dựng khu vực /admin được bảo vệ gồm dashboard, quản lý bài viết, chuyên mục và tags.
+- [x] Xây dựng trình soạn thảo trực quan có định dạng, xem trước, lưu nháp và xuất bản.
+- [x] Tích hợp upload hình ảnh qua Supabase Storage, lưu path/URL và kiểm tra quyền upload.
+- [x] Thêm các trạng thái tải, rỗng, lỗi; bảo đảm khả dụng bằng bàn phím và responsive mobile-first.
+- [x] Cung cấp template biến môi trường trong README (môi trường làm việc quản lý `.env` bằng Secrets), SQL migration/RLS/storage setup, script seed không chứa mật khẩu và README cho Supabase, GitHub, Vercel.
+- [x] Viết/cập nhật unit test, chạy kiểm tra TypeScript/lint/build và xác minh giao diện desktop/mobile.
+- [x] Lưu checkpoint phiên bản đã kiểm thử để bàn giao.
+- [x] Chuẩn bị quy trình cập nhật Project URL/anon key, chạy migration/seed và kiểm thử Supabase thật trong README; xác minh live cần được thực hiện sau khi người triển khai cung cấp key hợp lệ.
+- [x] Mở rộng tìm kiếm để hỗ trợ tags thực sự ở lớp dữ liệu và trang `/search`, rồi kiểm tra lại kết quả theo tag.
+- [x] Bổ sung chế độ preview bài viết trong editor admin trước khi xuất bản.
+- [x] Thêm loading states và error states rõ ràng cho các route public/admin.
