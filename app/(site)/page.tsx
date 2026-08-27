@@ -114,7 +114,7 @@ export default async function HomePage() {
                   className="group grid grid-cols-[28px_1fr] gap-3 py-4"
                 >
                   <span className="display text-2xl font-bold text-[#cbd5e1]">
-                    0{index + 1}
+                    {String(index + 1).padStart(2, "0")}
                   </span>
                   <span>
                     <span className="text-sm font-bold leading-5 transition group-hover:text-[#4062ff]">

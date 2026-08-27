@@ -11,9 +11,10 @@ export default async function NewPostPage() {
 
   try {
     categories = await getCategories();
-  } catch (error) {
+  } catch {
+    // Categories are optional for saving a post. Surface the failure as an
+    // inline alert instead of breaking the whole editor.
     categoriesUnavailable = true;
-    console.error("Unable to load post categories", error);
   }
 
   return (

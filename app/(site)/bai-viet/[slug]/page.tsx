@@ -1,14 +1,33 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getPostBySlug, getRelatedPosts } from "@/lib/data/posts";
+import type { Metadata } from "next";
+import { getPostBySlug, getRelatedPosts, recordView } from "@/lib/data/posts";
 import { PostCard } from "@/components/site/PostCard";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
+  if (!post) return { title: "Bài viết không tồn tại" };
+  return {
+    title: post.title,
+    description: post.excerpt ?? undefined,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt ?? undefined,
+      type: "article",
+      publishedTime: post.published_at ?? undefined,
+      images: post.cover_image ? [post.cover_image] : undefined,
+    },
+  };
+}
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) notFound();
   const related = await getRelatedPosts(post);
+  await recordView(slug);
 
   return (
     <main className="container max-w-4xl py-12">

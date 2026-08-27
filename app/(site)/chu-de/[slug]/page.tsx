@@ -1,7 +1,15 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { EmptyState } from "@/components/site/EmptyState";
 import { PostCard } from "@/components/site/PostCard";
 import { getPublishedPosts } from "@/lib/data/posts";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const result = await getPublishedPosts(1, 1, slug).catch(() => ({ posts: [] }));
+  const title = result.posts[0]?.category?.name || "Chuyên mục";
+  return { title };
+}
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

@@ -1,7 +1,10 @@
 export function buildPostSearchClauses(query: string, categoryIds: string[] = [], postIdsFromTags: string[] = []) {
-  const term = query.trim().replace(/[%_]/g, "\\$&");
+  // Dấu phẩy/ngoặc đơn sẽ phá vỡ cú pháp `.or()` của PostgREST nên phải bị loại bỏ;
+  // `%` và `_` là wildcard của ilike nên cần được escape.
+  const term = query.trim().replace(/[(),]/g, " ").replace(/\s+/g, " ").replace(/[%_]/g, "\\$&").trim();
   const search = `%${term}%`;
-  const clauses = [`title.ilike.${search}`, `excerpt.ilike.${search}`, `content.ilike.${search}`];
+  const clauses: string[] = [];
+  if (term) clauses.push(`title.ilike.${search}`, `excerpt.ilike.${search}`, `content.ilike.${search}`);
   if (categoryIds.length) clauses.push(`category_id.in.(${categoryIds.join(",")})`);
   if (postIdsFromTags.length) clauses.push(`id.in.(${postIdsFromTags.join(",")})`);
   return { search, clauses };
@@ -11,10 +14,16 @@ type MatchByNameQuery = { select: (columns: string) => { ilike: (field: string, 
 type PostTagQuery = { select: (columns: string) => { in: (field: string, values: string[]) => PromiseLike<{ data: Array<{ post_id: string }> | null }> } };
 export type SearchRelationClient = { from(table: "categories" | "tags"): MatchByNameQuery; from(table: "post_tags"): PostTagQuery };
 
+function escapeLikeValue(value: string) {
+  return value.replace(/[%_]/g, "\\$&");
+}
+
 export async function collectSearchRelationIds(supabase: SearchRelationClient, query: string) {
+  const trimmed = query.trim();
+  const escaped = escapeLikeValue(trimmed);
   const [{ data: matchedCategory }, { data: matchedTags }] = await Promise.all([
-    supabase.from("categories").select("id").ilike("name", `%${query.trim()}%`),
-    supabase.from("tags").select("id").ilike("name", `%${query.trim()}%`),
+    supabase.from("categories").select("id").ilike("name", `%${escaped}%`),
+    supabase.from("tags").select("id").ilike("name", `%${escaped}%`),
   ]);
   const categoryIds = (matchedCategory ?? []).map((category: { id: string }) => category.id);
   const tagIds = (matchedTags ?? []).map((tag: { id: string }) => tag.id);

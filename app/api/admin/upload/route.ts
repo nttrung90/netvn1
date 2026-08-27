@@ -25,7 +25,8 @@ export async function POST(request: Request) {
   try {
     const client = createAdminClient();
     const path = `${current.user.id}/${randomUUID()}.${extensionByType[file.type]}`;
-    const { error } = await client.storage.from("media").upload(path, file, { contentType: file.type, upsert: false });
+    const arrayBuffer = await file.arrayBuffer();
+    const { error } = await client.storage.from("media").upload(path, Buffer.from(arrayBuffer), { contentType: file.type, upsert: false });
     if (error) throw error;
     const { data } = client.storage.from("media").getPublicUrl(path);
     return NextResponse.json({ url: data.publicUrl });

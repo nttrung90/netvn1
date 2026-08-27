@@ -13,8 +13,8 @@ const categorySchema = z.object({ name: z.string().trim().min(2).max(80), descri
 const tagSchema = z.object({ name: z.string().trim().min(2).max(50) });
 
 function fromPostForm(formData: FormData) {
-  const values = postSchema.parse({ title: formData.get("title"), excerpt: formData.get("excerpt") || "", content: formData.get("content"), coverImage: formData.get("coverImage") || "", categoryId: formData.get("categoryId") || "", status: formData.get("status"), tags: formData.get("tags") || "" });
-  return { ...values, content: sanitizeHtml(values.content, { allowedTags: ["p", "br", "h2", "h3", "strong", "em", "u", "ul", "ol", "li", "a", "img", "blockquote", "pre", "code"], allowedAttributes: { a: ["href", "target", "rel"], img: ["src", "alt", "title"] }, allowedSchemes: ["http", "https", "mailto"], transformTags: { a: sanitizeHtml.simpleTransform("a", { rel: "noopener noreferrer", target: "_blank" }) } }) };
+  const values = postSchema.parse({ title: formData.get("title"), excerpt: formData.get("excerpt") || "", content: formData.get("content"), coverImage: formData.get("coverImage") || "", categoryId: formData.get("categoryId") || "", status: formData.get("status") || "draft", tags: formData.get("tags") || "" });
+  return { ...values, content: sanitizeHtml(values.content, { allowedTags: ["p", "br", "h2", "h3", "strong", "em", "u", "ul", "ol", "li", "a", "img", "blockquote", "pre", "code", "span"], allowedAttributes: { "*": ["class"], a: ["href", "target", "rel"], img: ["src", "alt", "title"] }, allowedSchemes: ["http", "https", "mailto"], transformTags: { a: sanitizeHtml.simpleTransform("a", { rel: "noopener noreferrer", target: "_blank" }) } }) };
 }
 
 async function syncPostTags(postId: string, rawTags: string | undefined) {
@@ -24,8 +24,9 @@ async function syncPostTags(postId: string, rawTags: string | undefined) {
   if (!names.length) return;
   const tags = await Promise.all(names.map(async (name) => {
     const slug = slugify(name);
-    const { data, error } = await supabase.from("tags").upsert({ name, slug }, { onConflict: "slug" }).select("id").single();
+    const { data, error } = await supabase.from("tags").upsert({ name, slug }, { onConflict: "slug" }).select("id").maybeSingle();
     if (error) throw new Error(error.message);
+    if (!data) throw new Error("Không thể tạo thẻ: " + name);
     return { post_id: postId, tag_id: data.id };
   }));
   const { error } = await supabase.from("post_tags").insert(tags);
@@ -67,3 +68,9 @@ export async function updateCategory(id: string, formData: FormData) {
 export async function deleteCategory(id: string) { await requireAdmin(); const supabase = await createClient(); const { error } = await supabase.from("categories").delete().eq("id", id); if (error) throw new Error(error.message); revalidatePath("/"); revalidatePath("/admin/categories"); }
 export async function createTag(formData: FormData) { await requireAdmin(); const values = tagSchema.parse({ name: formData.get("name") }); const supabase = await createClient(); const { error } = await supabase.from("tags").upsert({ name: values.name, slug: slugify(values.name) }, { onConflict: "slug" }); if (error) throw new Error(error.message); revalidatePath("/admin/tags"); }
 export async function deleteTag(id: string) { await requireAdmin(); const supabase = await createClient(); const { error } = await supabase.from("tags").delete().eq("id", id); if (error) throw new Error(error.message); revalidatePath("/admin/tags"); }
+
+export async function logout() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/login");
+}

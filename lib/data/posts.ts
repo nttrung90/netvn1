@@ -87,6 +87,7 @@ export const searchPublishedPosts = cache(async (query: string, page = 1, pageSi
   const start = Math.max(0, (page - 1) * pageSize);
   const { categoryIds, postIdsFromTags } = await collectSearchRelationIds(supabase as unknown as SearchRelationClient, query);
   const { clauses } = buildPostSearchClauses(query, categoryIds, postIdsFromTags);
+  if (!clauses.length) return emptyPage(page, pageSize);
   const { data, error, count } = await supabase.from("posts").select(postSelect, { count: "exact" }).eq("status", "published").or(clauses.join(",")).order("published_at", { ascending: false }).range(start, start + pageSize - 1);
   if (error) throw new Error(error.message);
   return { posts: (data ?? []).map(normalizePost), total: count ?? 0, page, pageSize, pageCount: Math.max(1, Math.ceil((count ?? 0) / pageSize)) };
