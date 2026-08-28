@@ -11,6 +11,12 @@ function emptyPage(page: number, pageSize: number): PaginatedPosts {
   return { posts: [], total: 0, page, pageSize, pageCount: 1 };
 }
 
+function reportPublicDataError(operation: string, error: unknown) {
+  // Keep public pages available when Supabase is temporarily unavailable. The
+  // complete error remains in the Vercel runtime log for diagnosis.
+  console.error(`Supabase query failed (${operation})`, error);
+}
+
 function normalizePost(post: Record<string, unknown>): PostWithRelations {
   const { post_tags, ...rest } = post;
   const relations = Array.isArray(post_tags) ? post_tags as unknown as PostTagRelation[] : [];
@@ -25,7 +31,10 @@ export const getPublishedPosts = cache(async (page = 1, pageSize = 9, categorySl
   let query = supabase.from("posts").select(select, { count: "exact" }).eq("status", "published").order("published_at", { ascending: false }).range(start, start + pageSize - 1);
   if (categorySlug) query = query.eq("category.slug", categorySlug);
   const { data, error, count } = await query;
-  if (error) throw new Error(error.message);
+  if (error) {
+    reportPublicDataError("getPublishedPosts", error);
+    return emptyPage(page, pageSize);
+  }
   return { posts: ((data ?? []) as unknown as Record<string, unknown>[]).map(normalizePost), total: count ?? 0, page, pageSize, pageCount: Math.max(1, Math.ceil((count ?? 0) / pageSize)) };
 });
 
@@ -33,7 +42,10 @@ export const getPostBySlug = cache(async (slug: string) => {
   if (!isSupabaseConfigured) return null;
   const supabase = await createClient();
   const { data, error } = await supabase.from("posts").select(postSelect).eq("slug", slug).eq("status", "published").maybeSingle();
-  if (error) throw new Error(error.message);
+  if (error) {
+    reportPublicDataError("getPostBySlug", error);
+    return null;
+  }
   return data ? normalizePost(data) : null;
 });
 
@@ -41,7 +53,10 @@ export const getFeaturedPosts = cache(async (limit = 3) => {
   if (!isSupabaseConfigured) return [];
   const supabase = await createClient();
   const { data, error } = await supabase.from("posts").select(postSelect).eq("status", "published").order("view_count", { ascending: false }).order("published_at", { ascending: false }).limit(limit);
-  if (error) throw new Error(error.message);
+  if (error) {
+    reportPublicDataError("getFeaturedPosts", error);
+    return [];
+  }
   return (data ?? []).map(normalizePost);
 });
 
@@ -53,7 +68,10 @@ export const getRelatedPosts = cache(async (post: PostWithRelations, limit = 3) 
   let query = supabase.from("posts").select(postSelect).eq("status", "published").neq("id", post.id).order("published_at", { ascending: false }).limit(limit);
   if (post.category?.id) query = query.eq("category_id", post.category.id);
   const { data, error } = await query;
-  if (error) throw new Error(error.message);
+  if (error) {
+    reportPublicDataError("getRelatedPosts", error);
+    return [];
+  }
   return (data ?? []).map(normalizePost);
 });
 
@@ -68,7 +86,10 @@ export const getCategories = cache(async () => {
   if (!isSupabaseConfigured) return [];
   const supabase = await createClient();
   const { data, error } = await supabase.from("categories").select("*").order("name");
-  if (error) throw new Error(error.message);
+  if (error) {
+    reportPublicDataError("getCategories", error);
+    return [];
+  }
   return data ?? [];
 });
 
@@ -76,7 +97,10 @@ export const getTags = cache(async () => {
   if (!isSupabaseConfigured) return [];
   const supabase = await createClient();
   const { data, error } = await supabase.from("tags").select("*").order("name");
-  if (error) throw new Error(error.message);
+  if (error) {
+    reportPublicDataError("getTags", error);
+    return [];
+  }
   return data ?? [];
 });
 
@@ -89,7 +113,10 @@ export const searchPublishedPosts = cache(async (query: string, page = 1, pageSi
   const { clauses } = buildPostSearchClauses(query, categoryIds, postIdsFromTags);
   if (!clauses.length) return emptyPage(page, pageSize);
   const { data, error, count } = await supabase.from("posts").select(postSelect, { count: "exact" }).eq("status", "published").or(clauses.join(",")).order("published_at", { ascending: false }).range(start, start + pageSize - 1);
-  if (error) throw new Error(error.message);
+  if (error) {
+    reportPublicDataError("searchPublishedPosts", error);
+    return emptyPage(page, pageSize);
+  }
   return { posts: (data ?? []).map(normalizePost), total: count ?? 0, page, pageSize, pageCount: Math.max(1, Math.ceil((count ?? 0) / pageSize)) };
 });
 

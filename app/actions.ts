@@ -7,10 +7,29 @@ import sanitizeHtml from "sanitize-html";
 import { requireAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/utils";
+import type { PostActionState } from "@/types/actions";
 
 const postSchema = z.object({ title: z.string().trim().min(3).max(180), excerpt: z.string().trim().max(400).optional(), content: z.string().trim().min(1), coverImage: z.string().url().optional().or(z.literal("")), categoryId: z.string().uuid().optional().or(z.literal("")), status: z.enum(["draft", "published"]), tags: z.string().max(300).optional() });
 const categorySchema = z.object({ name: z.string().trim().min(2).max(80), description: z.string().trim().max(240).optional() });
 const tagSchema = z.object({ name: z.string().trim().min(2).max(50) });
+
+function postActionError(error: unknown) {
+  console.error("Post action failed", error);
+  const message = error instanceof Error ? error.message : "Lỗi không xác định.";
+  if (/row-level security|permission denied|not authorized/i.test(message)) {
+    return "Tài khoản này chưa có quyền quản trị để lưu bài viết.";
+  }
+  if (/relation .* does not exist|schema cache/i.test(message)) {
+    return "Cơ sở dữ liệu chưa được khởi tạo đầy đủ. Hãy chạy migration Supabase.";
+  }
+  if (/duplicate key|unique constraint/i.test(message)) {
+    return "Dữ liệu bị trùng. Hãy đổi tiêu đề hoặc thẻ rồi thử lại.";
+  }
+  if (/Supabase chưa được cấu hình/i.test(message)) {
+    return "Supabase chưa được cấu hình đúng trên môi trường này.";
+  }
+  return "Không thể lưu bài viết. Hãy thử lại hoặc kiểm tra Runtime Logs trên Vercel.";
+}
 
 function fromPostForm(formData: FormData) {
   const values = postSchema.parse({ title: formData.get("title"), excerpt: formData.get("excerpt") || "", content: formData.get("content"), coverImage: formData.get("coverImage") || "", categoryId: formData.get("categoryId") || "", status: formData.get("status") || "draft", tags: formData.get("tags") || "" });
@@ -33,26 +52,37 @@ async function syncPostTags(postId: string, rawTags: string | undefined) {
   if (error) throw new Error(error.message);
 }
 
-export async function createPost(formData: FormData) {
+export async function createPost(_: PostActionState, formData: FormData): Promise<PostActionState> {
   const { user } = await requireAdmin();
-  const values = fromPostForm(formData);
-  const supabase = await createClient();
-  const slug = `${slugify(values.title)}-${Date.now().toString(36)}`;
-  const { data, error } = await supabase.from("posts").insert({ title: values.title, slug, excerpt: values.excerpt || null, content: values.content, cover_image: values.coverImage || null, category_id: values.categoryId || null, status: values.status, published_at: values.status === "published" ? new Date().toISOString() : null, author_id: user.id }).select("id").single();
-  if (error) throw new Error(error.message);
-  await syncPostTags(data.id, values.tags);
-  revalidatePath("/"); revalidatePath("/admin/posts"); redirect(`/admin/posts/${data.id}/edit`);
+  try {
+    const values = fromPostForm(formData);
+    const supabase = await createClient();
+    const slug = `${slugify(values.title)}-${Date.now().toString(36)}`;
+    const { data, error } = await supabase.from("posts").insert({ title: values.title, slug, excerpt: values.excerpt || null, content: values.content, cover_image: values.coverImage || null, category_id: values.categoryId || null, status: values.status, published_at: values.status === "published" ? new Date().toISOString() : null, author_id: user.id }).select("id").single();
+    if (error) throw new Error(error.message);
+    await syncPostTags(data.id, values.tags);
+    revalidatePath("/"); revalidatePath("/admin/posts");
+    return { error: null, redirectTo: `/admin/posts/${data.id}/edit?saved=1` };
+  } catch (error) {
+    return { error: postActionError(error), redirectTo: null };
+  }
 }
 
-export async function updatePost(id: string, formData: FormData) {
+export async function updatePost(id: string, _: PostActionState, formData: FormData): Promise<PostActionState> {
   await requireAdmin();
-  const values = fromPostForm(formData);
-  const supabase = await createClient();
-  const { data: previous } = await supabase.from("posts").select("published_at").eq("id", id).single();
-  const { error } = await supabase.from("posts").update({ title: values.title, excerpt: values.excerpt || null, content: values.content, cover_image: values.coverImage || null, category_id: values.categoryId || null, status: values.status, published_at: values.status === "published" ? previous?.published_at ?? new Date().toISOString() : null }).eq("id", id);
-  if (error) throw new Error(error.message);
-  await syncPostTags(id, values.tags);
-  revalidatePath("/"); revalidatePath("/admin/posts"); redirect(`/admin/posts/${id}/edit?saved=1`);
+  try {
+    const values = fromPostForm(formData);
+    const supabase = await createClient();
+    const { data: previous, error: previousError } = await supabase.from("posts").select("published_at").eq("id", id).single();
+    if (previousError) throw new Error(previousError.message);
+    const { error } = await supabase.from("posts").update({ title: values.title, excerpt: values.excerpt || null, content: values.content, cover_image: values.coverImage || null, category_id: values.categoryId || null, status: values.status, published_at: values.status === "published" ? previous?.published_at ?? new Date().toISOString() : null }).eq("id", id);
+    if (error) throw new Error(error.message);
+    await syncPostTags(id, values.tags);
+    revalidatePath("/"); revalidatePath("/admin/posts"); revalidatePath(`/admin/posts/${id}/edit`);
+    return { error: null, redirectTo: `/admin/posts/${id}/edit?saved=1` };
+  } catch (error) {
+    return { error: postActionError(error), redirectTo: null };
+  }
 }
 
 export async function deletePost(id: string) {
