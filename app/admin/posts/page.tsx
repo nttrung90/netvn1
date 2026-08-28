@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAdminPosts } from "@/lib/data/posts";
+import { PostManagementList } from "@/components/admin/PostManagementList";
 
 export default async function PostsPage({ searchParams }: { searchParams: Promise<{ deleted?: string }> }) {
   const { deleted } = await searchParams;
@@ -24,35 +25,7 @@ export default async function PostsPage({ searchParams }: { searchParams: Promis
       {deleted && <p role="status" className="mt-5 rounded-xl border border-[#a6f4c5] bg-[#ecfdf3] px-4 py-3 text-sm text-[#027a48]">Đã xóa bài viết.</p>}
       
       <div className="mt-8 overflow-hidden rounded-2xl border bg-white">
-        {posts?.length ? (
-          posts.map((post) => (
-            <Link
-              className="flex items-center justify-between gap-4 border-b p-5 last:border-0 hover:bg-[#f9fafb] transition-colors"
-              href={`/admin/posts/${post.id}/edit`}
-              key={post.id}
-            >
-              <span>
-                <span className="block font-bold">{post.title}</span>
-                <span className="mt-1 block text-xs text-[#667085]">
-                  {post.category?.name || "Chưa phân loại"}
-                </span>
-              </span>
-              <span
-                className={`rounded-full px-2.5 py-1 text-xs font-bold ${
-                  post.status === "published"
-                    ? "bg-[#ecfdf3] text-[#027a48]"
-                    : "bg-[#f2f4f7] text-[#475467]"
-                }`}
-              >
-                {post.status === "published" ? "Đã xuất bản" : "Bản nháp"}
-              </span>
-            </Link>
-          ))
-        ) : (
-          <p className="p-8 text-center text-sm text-[#667085]">
-            Chưa có bài viết. Hãy tạo bài đầu tiên.
-          </p>
-        )}
+        <PostManagementList posts={posts} />
       </div>
     </>
   );

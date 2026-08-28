@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getDashboardStats } from "@/lib/data/posts";
 import { formatCount } from "@/lib/utils";
+import { PostManagementList } from "@/components/admin/PostManagementList";
 
 export default async function AdminPage() {
   const stats = await getDashboardStats();
@@ -30,21 +31,15 @@ export default async function AdminPage() {
           </section>
         ))}
       </div>
-      <section className="mt-8 rounded-2xl border bg-white p-5">
-        <h2 className="font-bold">Cập nhật gần đây</h2>
-        {stats.latest.length ? (
-          <ul className="mt-3 divide-y">
-            {stats.latest.map((post) => (
-              <li className="py-3" key={post.id}>
-                <Link className="font-bold hover:text-[#4062ff]" href={`/admin/posts/${post.id}/edit`}>
-                  {post.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="mt-3 text-sm text-[#667085]">Chưa có bài viết nào.</p>
-        )}
+      <section className="mt-8 overflow-hidden rounded-2xl border bg-white">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
+          <div>
+            <h2 className="font-bold">Cập nhật gần đây</h2>
+            <p className="mt-1 text-xs text-[#667085]">Chỉnh sửa hoặc xóa nhanh một bài viết.</p>
+          </div>
+          <Link href="/admin/posts" className="text-sm font-bold text-[#4062ff] hover:text-[#3446cc]">Quản lý tất cả</Link>
+        </div>
+        <div className="px-5 pb-2"><PostManagementList posts={stats.latest} compact /></div>
       </section>
     </>
   );
