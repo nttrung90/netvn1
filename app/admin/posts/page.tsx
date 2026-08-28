@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { getAdminPosts } from "@/lib/data/posts";
 
-export default async function PostsPage() {
+export default async function PostsPage({ searchParams }: { searchParams: Promise<{ deleted?: string }> }) {
+  const { deleted } = await searchParams;
   const posts = await getAdminPosts();
 
   return (
@@ -20,6 +21,7 @@ export default async function PostsPage() {
           Viết bài mới
         </Link>
       </div>
+      {deleted && <p role="status" className="mt-5 rounded-xl border border-[#a6f4c5] bg-[#ecfdf3] px-4 py-3 text-sm text-[#027a48]">Đã xóa bài viết.</p>}
       
       <div className="mt-8 overflow-hidden rounded-2xl border bg-white">
         {posts?.length ? (

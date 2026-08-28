@@ -86,7 +86,13 @@ export async function updatePost(id: string, _: PostActionState, formData: FormD
 }
 
 export async function deletePost(id: string) {
-  await requireAdmin(); const supabase = await createClient(); const { error } = await supabase.from("posts").delete().eq("id", id); if (error) throw new Error(error.message); revalidatePath("/"); revalidatePath("/admin/posts");
+  await requireAdmin();
+  const supabase = await createClient();
+  const { error } = await supabase.from("posts").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+  revalidatePath("/");
+  revalidatePath("/admin/posts");
+  redirect("/admin/posts?deleted=1");
 }
 
 export async function createCategory(formData: FormData) {
