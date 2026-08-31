@@ -68,17 +68,20 @@ describe("Thuật toán Phân phối bài viết Chống Trùng lặp (Deduplica
 
     const displayedIds = new Set<string>();
 
-    // 1. Featured (Top 3 by views)
-    const sortedByViews = [...allPosts].sort((a, b) => b.view_count - a.view_count);
+    // 1. Featured (Top 3 by published_at DESC - newest posts always lead at the top!)
+    const sortedByDate = [...allPosts].sort(
+      (a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()
+    );
     const featured: PostWithRelations[] = [];
-    for (const post of sortedByViews) {
+    for (const post of sortedByDate) {
       if (featured.length >= 3) break;
       featured.push(post);
       displayedIds.add(post.id);
     }
     expect(featured.map((p) => p.id)).toEqual(["post-1", "post-2", "post-3"]);
 
-    // 2. Popular (Top 4 by views, excluding featured)
+    // 2. Popular (Top 4 by views, excluding featured lead posts)
+    const sortedByViews = [...allPosts].sort((a, b) => b.view_count - a.view_count);
     const popular: PostWithRelations[] = [];
     for (const post of sortedByViews) {
       if (popular.length >= 4) break;
@@ -90,9 +93,6 @@ describe("Thuật toán Phân phối bài viết Chống Trùng lặp (Deduplica
     expect(popular.map((p) => p.id)).toEqual(["post-4", "post-5", "post-6", "post-7"]);
 
     // 3. Latest (Top 6 by date, excluding featured & popular)
-    const sortedByDate = [...allPosts].sort(
-      (a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()
-    );
     const latest: PostWithRelations[] = [];
     for (const post of sortedByDate) {
       if (latest.length >= 6) break;

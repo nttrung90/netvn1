@@ -78,7 +78,6 @@ export const getFeaturedPosts = cache(async (limit = 3, excludeIds?: string[]) =
     .from("posts")
     .select(postSelect)
     .eq("status", "published")
-    .order("view_count", { ascending: false })
     .order("published_at", { ascending: false });
 
   if (excludeIds && excludeIds.length > 0) {
@@ -94,7 +93,25 @@ export const getFeaturedPosts = cache(async (limit = 3, excludeIds?: string[]) =
 });
 
 export const getPopularPosts = cache(async (limit = 4, excludeIds?: string[]) => {
-  return getFeaturedPosts(limit, excludeIds);
+  if (!isSupabaseConfigured) return [];
+  const supabase = await createClient();
+  let query = supabase
+    .from("posts")
+    .select(postSelect)
+    .eq("status", "published")
+    .order("view_count", { ascending: false })
+    .order("published_at", { ascending: false });
+
+  if (excludeIds && excludeIds.length > 0) {
+    query = query.not("id", "in", `(${excludeIds.join(",")})`);
+  }
+
+  const { data, error } = await query.limit(limit);
+  if (error) {
+    reportPublicDataError("getPopularPosts", error);
+    return [];
+  }
+  return (data ?? []).map(normalizePost);
 });
 
 export const getRelatedPosts = cache(async (post: PostWithRelations, limit = 3) => {
@@ -172,10 +189,10 @@ export type HomeFeedData = {
 
 /**
  * Coordinated home feed fetcher that guarantees 100% unique posts across all sections:
- * - Featured (Top 3 by views/priority)
- * - Popular / Trending (Next top by views, strictly excluding Featured)
- * - Latest Stream (Latest by published date, strictly excluding Featured & Popular)
- * - Category Sections (Recent per category, strictly excluding all previously displayed posts)
+ * - Featured: Newest published posts brought immediately to the top of the homepage
+ * - Popular / Trending: Most-read posts sorted by view_count DESC, strictly excluding Featured
+ * - Latest Stream: Next newest posts by published_at DESC, strictly excluding Featured & Popular
+ * - Category Sections: Latest posts per category, strictly excluding all previously displayed posts
  */
 export const getHomeFeedData = cache(async (): Promise<HomeFeedData> => {
   if (!isSupabaseConfigured) {
@@ -199,20 +216,25 @@ export const getHomeFeedData = cache(async (): Promise<HomeFeedData> => {
 
   const displayedIds = new Set<string>();
 
-  // 1. Featured posts: Top 3 by view_count DESC, published_at DESC
-  const sortedByViews = [...allPosts].sort((a, b) => {
-    if (b.view_count !== a.view_count) return b.view_count - a.view_count;
-    return new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime();
-  });
+  // 1. Featured posts (Hero Lead + Secondary Features at the very top):
+  // ALWAYS sorted by published_at DESC so that newly published posts are IMMEDIATELY brought to the top!
+  const sortedByDate = [...allPosts].sort(
+    (a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()
+  );
 
   const featured: PostWithRelations[] = [];
-  for (const post of sortedByViews) {
+  for (const post of sortedByDate) {
     if (featured.length >= 3) break;
     featured.push(post);
     displayedIds.add(post.id);
   }
 
-  // 2. Popular posts (Sidebar "Đọc nhiều"): Next top by views, strictly excluding featured
+  // 2. Popular posts (Sidebar "Đọc nhiều nhất"): Next top by view_count DESC, strictly excluding featured
+  const sortedByViews = [...allPosts].sort((a, b) => {
+    if (b.view_count !== a.view_count) return b.view_count - a.view_count;
+    return new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime();
+  });
+
   const popular: PostWithRelations[] = [];
   for (const post of sortedByViews) {
     if (popular.length >= 4) break;
@@ -222,11 +244,7 @@ export const getHomeFeedData = cache(async (): Promise<HomeFeedData> => {
     }
   }
 
-  // 3. Latest posts ("Mới nhất"): Most recent by published_at DESC, excluding featured & popular
-  const sortedByDate = [...allPosts].sort(
-    (a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()
-  );
-
+  // 3. Latest posts ("Mới nhất"): Next newest posts by published_at DESC, excluding featured & popular
   const latest: PostWithRelations[] = [];
   for (const post of sortedByDate) {
     if (latest.length >= 6) break;
@@ -236,7 +254,7 @@ export const getHomeFeedData = cache(async (): Promise<HomeFeedData> => {
     }
   }
 
-  // 4. Category sections ("Chuyên đề"): Up to 3 distinct posts per category, excluding all already displayed
+  // 4. Category sections ("Chuyên đề"): Up to 3 distinct posts per category by published_at DESC, excluding all already displayed
   const sections: Array<{ category: (typeof categories)[number]; posts: PostWithRelations[] }> = [];
   for (const category of categories) {
     const categoryPosts: PostWithRelations[] = [];

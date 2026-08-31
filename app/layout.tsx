@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Toaster } from "sonner";
 import "./globals.css";
 import { getSiteUrl } from "@/lib/utils";
 
@@ -11,5 +12,12 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="vi"><body>{children}</body></html>;
+  return (
+    <html lang="vi">
+      <body>
+        <Toaster richColors position="top-right" closeButton />
+        {children}
+      </body>
+    </html>
+  );
 }

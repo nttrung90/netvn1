@@ -27,9 +27,24 @@ export function PostManagementList({ posts, compact = false }: { posts: PostWith
               </span>
             </div>
           </div>
-          <div className="flex shrink-0 items-center gap-1">
-            <Link aria-label={`Chỉnh sửa ${post.title}`} className="inline-flex items-center gap-1 rounded-lg px-2.5 py-2 text-xs font-bold text-[#4062ff] transition hover:bg-[#edf0ff]" href={`/admin/posts/${post.id}/edit`}>
-              <ExternalLink size={14}/>Chỉnh sửa
+          <div className="flex shrink-0 items-center gap-1.5">
+            {post.status === "published" && (
+              <Link
+                aria-label={`Xem bài ${post.title}`}
+                className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-[#4062ff] hover:text-[#4062ff]"
+                href={`/bai-viet/${post.slug}`}
+                target="_blank"
+              >
+                <ExternalLink size={13} />
+                <span className="hidden sm:inline">Xem bài</span>
+              </Link>
+            )}
+            <Link
+              aria-label={`Chỉnh sửa ${post.title}`}
+              className="inline-flex items-center gap-1 rounded-lg bg-[#edf0ff] px-2.5 py-1.5 text-xs font-bold text-[#4062ff] transition hover:bg-[#4062ff] hover:text-white"
+              href={`/admin/posts/${post.id}/edit`}
+            >
+              Chỉnh sửa
             </Link>
             <DeleteButton action={deletePost.bind(null, post.id)} />
           </div>

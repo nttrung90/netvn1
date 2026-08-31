@@ -58,11 +58,38 @@ export async function createPost(_: PostActionState, formData: FormData): Promis
     const values = fromPostForm(formData);
     const supabase = await createClient();
     const slug = `${slugify(values.title)}-${Date.now().toString(36)}`;
-    const { data, error } = await supabase.from("posts").insert({ title: values.title, slug, excerpt: values.excerpt || null, content: values.content, cover_image: values.coverImage || null, category_id: values.categoryId || null, status: values.status, published_at: values.status === "published" ? new Date().toISOString() : null, author_id: user.id }).select("id").single();
+    const now = new Date().toISOString();
+    const publishedAt = values.status === "published" ? now : null;
+
+    const { data, error } = await supabase
+      .from("posts")
+      .insert({
+        title: values.title,
+        slug,
+        excerpt: values.excerpt || null,
+        content: values.content,
+        cover_image: values.coverImage || null,
+        category_id: values.categoryId || null,
+        status: values.status,
+        published_at: publishedAt,
+        author_id: user.id,
+      })
+      .select("id, slug")
+      .single();
+
     if (error) throw new Error(error.message);
     await syncPostTags(data.id, values.tags);
-    revalidatePath("/"); revalidatePath("/admin/posts");
-    return { error: null, redirectTo: `/admin/posts/${data.id}/edit?saved=1` };
+
+    revalidatePath("/", "layout");
+    revalidatePath("/");
+    revalidatePath("/admin/posts");
+    revalidatePath("/page/1");
+
+    const isPublished = values.status === "published";
+    return {
+      error: null,
+      redirectTo: `/admin/posts/${data.id}/edit?published=${isPublished ? "1" : "0"}&saved=1&slug=${encodeURIComponent(data.slug)}&ts=${Date.now()}`,
+    };
   } catch (error) {
     return { error: postActionError(error), redirectTo: null };
   }
@@ -73,13 +100,50 @@ export async function updatePost(id: string, _: PostActionState, formData: FormD
   try {
     const values = fromPostForm(formData);
     const supabase = await createClient();
-    const { data: previous, error: previousError } = await supabase.from("posts").select("published_at").eq("id", id).single();
+    const { data: previous, error: previousError } = await supabase
+      .from("posts")
+      .select("slug, published_at, status")
+      .eq("id", id)
+      .single();
+
     if (previousError) throw new Error(previousError.message);
-    const { error } = await supabase.from("posts").update({ title: values.title, excerpt: values.excerpt || null, content: values.content, cover_image: values.coverImage || null, category_id: values.categoryId || null, status: values.status, published_at: values.status === "published" ? previous?.published_at ?? new Date().toISOString() : null }).eq("id", id);
+
+    const now = new Date().toISOString();
+    // When publishing, set published_at to current timestamp so the post is brought immediately to the top
+    const publishedAt = values.status === "published"
+      ? (previous?.status !== "published" || !previous?.published_at ? now : now)
+      : null;
+
+    const { error } = await supabase
+      .from("posts")
+      .update({
+        title: values.title,
+        excerpt: values.excerpt || null,
+        content: values.content,
+        cover_image: values.coverImage || null,
+        category_id: values.categoryId || null,
+        status: values.status,
+        published_at: publishedAt,
+        updated_at: now,
+      })
+      .eq("id", id);
+
     if (error) throw new Error(error.message);
     await syncPostTags(id, values.tags);
-    revalidatePath("/"); revalidatePath("/admin/posts"); revalidatePath(`/admin/posts/${id}/edit`);
-    return { error: null, redirectTo: `/admin/posts/${id}/edit?saved=1` };
+
+    revalidatePath("/", "layout");
+    revalidatePath("/");
+    revalidatePath("/admin/posts");
+    revalidatePath(`/admin/posts/${id}/edit`);
+    revalidatePath("/page/1");
+
+    const postSlug = previous?.slug || slugify(values.title);
+    const isPublished = values.status === "published";
+
+    return {
+      error: null,
+      redirectTo: `/admin/posts/${id}/edit?published=${isPublished ? "1" : "0"}&saved=1&slug=${encodeURIComponent(postSlug)}&ts=${Date.now()}`,
+    };
   } catch (error) {
     return { error: postActionError(error), redirectTo: null };
   }
