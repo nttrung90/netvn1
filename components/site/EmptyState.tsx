@@ -1,3 +1,5 @@
+import { Inbox } from "lucide-react";
+
 export function EmptyState({
   title = "Chưa có nội dung để hiển thị",
   description = "Hãy quay lại sau khi tòa soạn có bài viết mới.",
@@ -6,9 +8,12 @@ export function EmptyState({
   description?: string;
 }) {
   return (
-    <div className="rounded-2xl border border-dashed bg-white p-8 text-center">
-      <p className="font-bold text-[#101828]">{title}</p>
-      <p className="mt-2 text-sm leading-6 text-[#667085]">{description}</p>
+    <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-white/60 p-10 text-center backdrop-blur-sm">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+        <Inbox size={22} />
+      </div>
+      <p className="mt-4 font-bold text-[#101828] text-base">{title}</p>
+      <p className="mt-1.5 max-w-sm text-xs leading-relaxed text-[#667085]">{description}</p>
     </div>
   );
 }
