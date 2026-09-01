@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles, Send } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { Logo } from "./Logo";
 import { getCategories } from "@/lib/data/posts";
+import { NewsletterForm } from "./NewsletterForm";
 
 export async function SiteFooter() {
   const categories = await getCategories();
@@ -83,25 +84,7 @@ export async function SiteFooter() {
             <p className="mt-4 text-xs leading-relaxed text-slate-400">
               Tổng hợp những chuyển động công nghệ quan trọng nhất vào sáng thứ Hai hằng tuần.
             </p>
-            <form
-              onSubmit={undefined}
-              action="#"
-              className="mt-4 flex items-center rounded-xl border border-slate-700 bg-slate-900/80 p-1.5 focus-within:border-[#4062ff]"
-            >
-              <input
-                type="email"
-                placeholder="Email của bạn..."
-                className="w-full bg-transparent px-3 py-1.5 text-xs text-white placeholder-slate-500 outline-none"
-                required
-              />
-              <button
-                type="button"
-                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#4062ff] text-white transition hover:bg-blue-600"
-                title="Đăng ký"
-              >
-                <Send size={13} />
-              </button>
-            </form>
+            <NewsletterForm />
           </div>
         </div>
 

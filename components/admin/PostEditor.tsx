@@ -24,7 +24,6 @@ import {
   ExternalLink,
   Loader2,
   Sparkles,
-  ArrowRight,
 } from "lucide-react";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -63,12 +62,10 @@ export function PostEditor({
 
   useEffect(() => {
     if (isJustPublished) {
-      setShowSuccessBanner(true);
       toast.success("Xuất bản bài viết thành công!", {
         description: "Bài viết đã được đưa lên trang đầu website.",
       });
     } else if (isJustDraftSaved) {
-      setShowSuccessBanner(true);
       toast.success("Đã lưu bản nháp thành công!");
     }
   }, [isJustPublished, isJustDraftSaved]);

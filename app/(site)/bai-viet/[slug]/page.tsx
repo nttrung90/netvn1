@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { Clock, Calendar, ChevronRight, User, Sparkles, BookOpen } from "lucide-react";
+import { Clock, Calendar, ChevronRight, BookOpen } from "lucide-react";
 import { getPostBySlug, getRelatedPosts, recordView } from "@/lib/data/posts";
 import { PostCard } from "@/components/site/PostCard";
 import { ReadingProgressBar } from "@/components/site/ReadingProgressBar";

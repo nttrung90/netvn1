@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Search, Sparkles, Tag, ArrowRight } from "lucide-react";
+import { Search, Tag } from "lucide-react";
 import { EmptyState } from "@/components/site/EmptyState";
 import { Pagination } from "@/components/site/Pagination";
 import { PostCard } from "@/components/site/PostCard";

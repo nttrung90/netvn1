@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles, TrendingUp, Flame, Zap, Compass, ChevronRight } from "lucide-react";
+import { ArrowRight, Sparkles, Flame, Zap, ChevronRight } from "lucide-react";
 import { EmptyState } from "@/components/site/EmptyState";
 import { PostCard } from "@/components/site/PostCard";
 import { getHomeFeedData } from "@/lib/data/posts";
