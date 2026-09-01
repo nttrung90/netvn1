@@ -146,9 +146,9 @@ export function PostEditor({
 
       {/* Success Notification Banner */}
       {showSuccessBanner && (
-        <div className="flex flex-col gap-3 rounded-2xl border border-emerald-300 bg-emerald-50 p-4 text-emerald-950 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 rounded-md border border-emerald-300 bg-emerald-50 p-4 text-emerald-950 shadow-sm sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-emerald-600 text-white shadow">
               <CheckCircle2 size={22} />
             </div>
             <div>
@@ -168,7 +168,7 @@ export function PostEditor({
               <NextLink
                 href={`/bai-viet/${urlSlug}`}
                 target="_blank"
-                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-700 px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-800"
+                className="inline-flex items-center gap-1.5 rounded-sm bg-emerald-700 px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-800"
               >
                 <span>Xem bài viết trên web</span>
                 <ExternalLink size={13} />
@@ -176,7 +176,7 @@ export function PostEditor({
             )}
             <NextLink
               href="/admin/posts"
-              className="inline-flex items-center gap-1 rounded-xl border border-emerald-300 bg-white px-3.5 py-2 text-xs font-bold text-emerald-800 transition hover:bg-emerald-100"
+              className="inline-flex items-center gap-1 rounded-sm border border-emerald-300 bg-white px-3.5 py-2 text-xs font-bold text-emerald-800 transition hover:bg-emerald-100"
             >
               Về danh sách bài
             </NextLink>
@@ -186,13 +186,13 @@ export function PostEditor({
 
       {/* Error Alert */}
       {state.error && (
-        <p role="alert" className="rounded-xl border border-[#fecdca] bg-[#fef3f2] px-4 py-3 text-sm leading-6 text-[#b42318]">
+        <p role="alert" className="rounded-sm border border-[#fecdca] bg-[#fef3f2] px-4 py-3 text-sm leading-6 text-[#b42318]">
           {state.error}
         </p>
       )}
 
       {/* Title & Excerpt Section */}
-      <section className="rounded-2xl border bg-white p-5 shadow-sm">
+      <section className="rounded-md border bg-white p-5 shadow-sm">
         <div className="grid gap-5">
           <label className="grid gap-2 text-sm font-bold">
             Tiêu đề bài viết
@@ -201,7 +201,7 @@ export function PostEditor({
               required
               defaultValue={post?.title}
               placeholder="Một tiêu đề rõ ràng, hấp dẫn…"
-              className="display w-full border-b border-[#cbd5e1] bg-transparent py-3 text-2xl md:text-3xl font-bold outline-none placeholder:text-[#98a2b3] focus:border-[#4062ff]"
+              className="display w-full border-b border-[#cbd5e1] bg-transparent py-3 text-2xl md:text-3xl font-bold outline-none placeholder:text-[#98a2b3] focus:border-[#d72626]"
             />
           </label>
           <label className="grid gap-2 text-sm font-bold">
@@ -212,14 +212,14 @@ export function PostEditor({
               maxLength={400}
               rows={3}
               placeholder="Tóm tắt giá trị chính của bài viết…"
-              className="resize-y rounded-xl border border-[#d0d5dd] p-3 text-sm font-normal leading-6 outline-none focus:border-[#4062ff]"
+              className="resize-y rounded-sm border border-[#d0d5dd] p-3 text-sm font-normal leading-6 outline-none focus:border-[#d72626]"
             />
           </label>
         </div>
       </section>
 
       {/* Editor Content */}
-      <section className="overflow-hidden rounded-2xl border bg-white shadow-sm">
+      <section className="overflow-hidden rounded-md border bg-white shadow-sm">
         <div className="flex flex-wrap items-center gap-1 border-b bg-[#f9fafb] p-2">
           {toolbar.map(({ icon: Icon, label, onClick }) => (
             <button
@@ -228,14 +228,14 @@ export function PostEditor({
               title={label}
               aria-label={label}
               key={label}
-              className="grid h-9 w-9 place-items-center rounded-lg text-[#475467] transition hover:bg-white hover:text-[#4062ff]"
+              className="grid h-9 w-9 place-items-center rounded-lg text-[#475467] transition hover:bg-white hover:text-[#d72626]"
             >
               <Icon size={17} />
             </button>
           ))}
           <label
             title="Chèn ảnh vào nội dung"
-            className="grid h-9 w-9 cursor-pointer place-items-center rounded-lg text-[#475467] hover:bg-white hover:text-[#4062ff]"
+            className="grid h-9 w-9 cursor-pointer place-items-center rounded-lg text-[#475467] hover:bg-white hover:text-[#d72626]"
           >
             <ImageUp size={17} />
             <input
@@ -265,12 +265,12 @@ export function PostEditor({
       </section>
 
       {/* Live Preview */}
-      <section className="rounded-2xl border bg-white p-5 shadow-sm">
-        <p className="text-xs font-bold uppercase tracking-[.15em] text-[#4062ff]">
+      <section className="rounded-md border bg-white p-5 shadow-sm">
+        <p className="text-xs font-bold uppercase tracking-[.15em] text-[#d72626]">
           Xem trước trực tiếp
         </p>
         <div
-          className="prose-news mt-3 max-w-none rounded-xl bg-[#f9fafb] p-5"
+          className="prose-news mt-3 max-w-none rounded-sm bg-[#f9fafb] p-5"
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: content || "<p>Phần xem trước sẽ xuất hiện khi bạn bắt đầu viết.</p>",
@@ -279,14 +279,14 @@ export function PostEditor({
       </section>
 
       {/* Categories & Cover Image */}
-      <section className="grid gap-5 rounded-2xl border bg-white p-5 lg:grid-cols-2 shadow-sm">
+      <section className="grid gap-5 rounded-md border bg-white p-5 lg:grid-cols-2 shadow-sm">
         <div className="grid gap-2">
           <label className="text-sm font-bold">
             Chuyên mục
             <select
               name="categoryId"
               defaultValue={post?.category_id || ""}
-              className="mt-2 w-full rounded-xl border border-[#d0d5dd] bg-white px-3 py-3 text-sm font-normal outline-none focus:border-[#4062ff]"
+              className="mt-2 w-full rounded-sm border border-[#d0d5dd] bg-white px-3 py-3 text-sm font-normal outline-none focus:border-[#d72626]"
             >
               <option value="">Chưa phân loại</option>
               {categories.map((category) => (
@@ -302,7 +302,7 @@ export function PostEditor({
               name="tags"
               defaultValue={post?.tags?.map((tag) => tag.name).join(", ") || ""}
               placeholder="AI, hướng dẫn, năng suất"
-              className="mt-2 w-full rounded-xl border border-[#d0d5dd] px-3 py-3 text-sm font-normal outline-none focus:border-[#4062ff]"
+              className="mt-2 w-full rounded-sm border border-[#d0d5dd] px-3 py-3 text-sm font-normal outline-none focus:border-[#d72626]"
             />
           </label>
         </div>
@@ -316,14 +316,14 @@ export function PostEditor({
                 alt=""
                 width={112}
                 height={80}
-                className="h-20 w-28 rounded-xl object-cover border"
+                className="h-20 w-28 rounded-sm object-cover border"
               />
             ) : (
-              <div className="grid h-20 w-28 place-items-center rounded-xl bg-[#edf0ff] text-xs text-[#667085]">
+              <div className="grid h-20 w-28 place-items-center rounded-sm bg-[#edf0ff] text-xs text-[#667085]">
                 Chưa có ảnh
               </div>
             )}
-            <label className="cursor-pointer rounded-xl border border-[#d0d5dd] px-3 py-2.5 text-sm font-bold transition hover:border-[#4062ff]">
+            <label className="cursor-pointer rounded-sm border border-[#d0d5dd] px-3 py-2.5 text-sm font-bold transition hover:border-[#d72626]">
               {uploading ? "Đang tải…" : "Tải ảnh lên"}
               <input
                 onChange={(event) => uploadImage(event, true)}
@@ -338,7 +338,7 @@ export function PostEditor({
       </section>
 
       {/* Sticky Bottom Action Bar */}
-      <div className="sticky bottom-4 z-10 flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-white/95 p-4 shadow-xl backdrop-blur">
+      <div className="sticky bottom-4 z-10 flex flex-wrap items-center justify-between gap-3 rounded-md border bg-white/95 p-4 shadow-xl backdrop-blur">
         <NextLink
           href="/admin/posts"
           className="text-xs font-bold text-slate-500 hover:text-slate-900 transition"
@@ -353,7 +353,7 @@ export function PostEditor({
             name="status"
             value="draft"
             onClick={() => setActiveButton("draft")}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-[#d0d5dd] bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm transition hover:border-slate-400 active:scale-[.98] disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 rounded-sm border border-[#d0d5dd] bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm transition hover:border-slate-400 active:scale-[.98] disabled:opacity-60"
           >
             {pending && activeButton === "draft" && <Loader2 size={14} className="animate-spin text-slate-600" />}
             <span>{pending && activeButton === "draft" ? "Đang lưu nháp…" : "Lưu nháp"}</span>
@@ -365,7 +365,7 @@ export function PostEditor({
             name="status"
             value="published"
             onClick={() => setActiveButton("published")}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-[#101828] px-5 py-2.5 text-sm font-bold text-white shadow-md transition hover:bg-[#344054] active:scale-[.98] disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 rounded-sm bg-[#101828] px-5 py-2.5 text-sm font-bold text-white shadow-md transition hover:bg-[#344054] active:scale-[.98] disabled:opacity-60"
           >
             {pending && activeButton === "published" ? (
               <>

@@ -16,7 +16,7 @@ export function PostManagementList({ posts, compact = false }: { posts: PostWith
       {posts.map((post) => (
         <div className={`flex flex-wrap items-center justify-between gap-4 ${compact ? "py-3" : "p-5"}`} key={post.id}>
           <div className="min-w-0">
-            <Link className="block truncate font-bold transition hover:text-[#4062ff]" href={`/admin/posts/${post.id}/edit`}>
+            <Link className="block truncate font-bold transition hover:text-[#d72626]" href={`/admin/posts/${post.id}/edit`}>
               {post.title}
             </Link>
             <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-[#667085]">
@@ -31,7 +31,7 @@ export function PostManagementList({ posts, compact = false }: { posts: PostWith
             {post.status === "published" && (
               <Link
                 aria-label={`Xem bài ${post.title}`}
-                className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-[#4062ff] hover:text-[#4062ff]"
+                className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-[#d72626] hover:text-[#d72626]"
                 href={`/bai-viet/${post.slug}`}
                 target="_blank"
               >
@@ -41,7 +41,7 @@ export function PostManagementList({ posts, compact = false }: { posts: PostWith
             )}
             <Link
               aria-label={`Chỉnh sửa ${post.title}`}
-              className="inline-flex items-center gap-1 rounded-lg bg-[#edf0ff] px-2.5 py-1.5 text-xs font-bold text-[#4062ff] transition hover:bg-[#4062ff] hover:text-white"
+              className="inline-flex items-center gap-1 rounded-lg bg-[#edf0ff] px-2.5 py-1.5 text-xs font-bold text-[#d72626] transition hover:bg-[#d72626] hover:text-white"
               href={`/admin/posts/${post.id}/edit`}
             >
               Chỉnh sửa

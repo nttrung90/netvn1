@@ -13,13 +13,13 @@ export async function SiteFooter() {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           {/* Col 1: Brand & Mission */}
           <div className="space-y-4">
-            <div className="inline-block rounded-xl bg-white/5 p-2 text-white backdrop-blur">
+            <div className="inline-block rounded-sm bg-white/5 p-2 text-white backdrop-blur">
               <Logo />
             </div>
             <p className="text-sm leading-relaxed text-slate-400">
               Cổng thông tin công nghệ độc lập, tập trung vào những góc nhìn thực dụng, phân tích có chiều sâu và công cụ giúp công việc hiệu quả hơn.
             </p>
-            <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#ccff00]">
+            <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#d72626]">
               <Sparkles size={14} />
               <span>Chính xác • Khách quan • Đáng tin</span>
             </div>
@@ -27,7 +27,7 @@ export async function SiteFooter() {
 
           {/* Col 2: Categories */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-[#ccff00]">
+            <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-[#d72626]">
               Chuyên mục
             </h3>
             <ul className="mt-4 space-y-2.5 text-sm">
@@ -49,7 +49,7 @@ export async function SiteFooter() {
 
           {/* Col 3: Navigation */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-[#ccff00]">
+            <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-[#d72626]">
               Khám phá
             </h3>
             <ul className="mt-4 space-y-2.5 text-sm">
@@ -78,7 +78,7 @@ export async function SiteFooter() {
 
           {/* Col 4: Newsletter Box */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-[#ccff00]">
+            <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-[#d72626]">
               Nhận bản tin
             </h3>
             <p className="mt-4 text-xs leading-relaxed text-slate-400">

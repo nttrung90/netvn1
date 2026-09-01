@@ -50,7 +50,7 @@ export function ShareButtons({ title, slug }: { title: string; slug: string }) {
       <button
         type="button"
         onClick={copyToClipboard}
-        className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-semibold transition ${
+        className={`inline-flex items-center gap-1.5 rounded-sm border px-3 py-1.5 text-xs font-semibold transition ${
           copied
             ? "border-emerald-500 bg-emerald-50 text-emerald-700"
             : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
@@ -64,7 +64,7 @@ export function ShareButtons({ title, slug }: { title: string; slug: string }) {
       <button
         type="button"
         onClick={shareTwitter}
-        className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-sky-500"
+        className="inline-flex h-8 w-8 items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-sky-500"
         title="Chia sẻ trên X / Twitter"
       >
         <Twitter size={14} />
@@ -73,7 +73,7 @@ export function ShareButtons({ title, slug }: { title: string; slug: string }) {
       <button
         type="button"
         onClick={shareFacebook}
-        className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-blue-600"
+        className="inline-flex h-8 w-8 items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-blue-600"
         title="Chia sẻ trên Facebook"
       >
         <Facebook size={14} />
@@ -82,7 +82,7 @@ export function ShareButtons({ title, slug }: { title: string; slug: string }) {
       <button
         type="button"
         onClick={shareLinkedin}
-        className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-blue-700"
+        className="inline-flex h-8 w-8 items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-blue-700"
         title="Chia sẻ trên LinkedIn"
       >
         <Linkedin size={14} />

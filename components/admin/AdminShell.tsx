@@ -22,7 +22,7 @@ export function AdminShell({
              <Link href="/admin/categories">Chuyên mục</Link>
              <Link href="/admin/tags">Thẻ</Link>
              <Link href="/">Xem trang tin</Link>
-             <form action={logout}><button className="rounded-lg border border-[#d0d5dd] px-3 py-1.5 text-xs font-bold text-[#475467] hover:border-[#4062ff]">Đăng xuất</button></form>
+             <form action={logout}><button className="rounded-lg border border-[#d0d5dd] px-3 py-1.5 text-xs font-bold text-[#475467] hover:border-[#d72626]">Đăng xuất</button></form>
            </nav>
           <p className="text-xs text-[#667085]">{name || email || "Quản trị viên"}</p>
         </div>

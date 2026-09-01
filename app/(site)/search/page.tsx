@@ -21,7 +21,7 @@ export default async function SearchPage({
     <main className="container py-8 md:py-12">
       {/* Header */}
       <div className="max-w-2xl">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#4062ff]">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#d72626]">
           Tra cứu thông tin
         </p>
         <h1 className="display mt-2 text-3xl font-bold text-[#101828] sm:text-4xl md:text-5xl">
@@ -36,7 +36,7 @@ export default async function SearchPage({
       <form
         action="/search"
         method="GET"
-        className="mt-8 flex max-w-2xl items-center gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm focus-within:border-[#4062ff] focus-within:ring-4 focus-within:ring-[#4062ff]/10"
+        className="mt-8 flex max-w-2xl items-center gap-2 rounded-md border border-slate-200 bg-white p-2 shadow-sm focus-within:border-[#d72626] focus-within:ring-4 focus-within:ring-[#d72626]/10"
       >
         <div className="flex items-center pl-3 text-slate-400">
           <Search size={18} />
@@ -50,7 +50,7 @@ export default async function SearchPage({
         />
         <button
           type="submit"
-          className="rounded-xl bg-[#101828] px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#344054] active:scale-[.97]"
+          className="rounded-sm bg-[#101828] px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#344054] active:scale-[.97]"
         >
           Tìm kiếm
         </button>
@@ -66,7 +66,7 @@ export default async function SearchPage({
             <Link
               key={tag.id}
               href={`/search?q=${encodeURIComponent(tag.name)}`}
-              className="rounded-lg bg-slate-100 px-2.5 py-1 font-medium text-slate-700 transition hover:bg-[#edf0ff] hover:text-[#4062ff]"
+              className="rounded-lg bg-slate-100 px-2.5 py-1 font-medium text-slate-700 transition hover:bg-[#edf0ff] hover:text-[#d72626]"
             >
               #{tag.name}
             </Link>
@@ -80,7 +80,7 @@ export default async function SearchPage({
           <div className="flex items-center justify-between border-b border-slate-200 pb-3">
             <p className="text-xs font-semibold text-slate-600">
               Tìm thấy <strong className="text-slate-900 font-bold">{result.total}</strong> kết quả cho từ khóa{" "}
-              <strong className="text-[#4062ff]">“{q}”</strong>
+              <strong className="text-[#d72626]">“{q}”</strong>
             </p>
           </div>
 

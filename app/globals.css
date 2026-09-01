@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #101828;
-  --muted: #667085;
-  --line: #e6eaf0;
+  --ink: #222222;
+  --muted: #666666;
+  --line: #e5e7eb;
   --paper: #ffffff;
-  --canvas: #f7f9fc;
-  --accent: #4062ff;
-  --acid: #ccff00;
-  --soft-accent: #edf0ff;
+  --canvas: #f4f5f7;
+  --accent: #d72626;
+  --acid: #ffcc00;
+  --soft-accent: #fdf2f2;
 }
 
 * { border-color: var(--line); }
 html { scroll-behavior: smooth; }
 body {
-  background: var(--canvas);
+  background: var(--paper);
   color: var(--ink);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -26,72 +26,71 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
-::selection { background: var(--acid); color: var(--ink); }
+::selection { background: var(--accent); color: var(--paper); }
 
-.container { width: min(100% - 2rem, 1220px); margin-inline: auto; }
-.display { font-family: Georgia, Cambria, "Times New Roman", Times, serif; letter-spacing: -0.035em; }
+.container { width: min(100% - 2rem, 1280px); margin-inline: auto; }
+.display { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; letter-spacing: -0.01em; }
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-.prose-news { color: #334155; font-size: 1.125rem; line-height: 1.9; }
+.prose-news { color: #333333; font-size: 1.125rem; line-height: 1.75; }
 .prose-news h2, .prose-news h3 {
   color: var(--ink);
-  font-family: Georgia, Cambria, "Times New Roman", Times, serif;
   font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: -0.03em;
-  margin-top: 2.5rem;
+  line-height: 1.3;
+  margin-top: 2rem;
   margin-bottom: 1rem;
 }
-.prose-news h2 { font-size: 1.85rem; }
-.prose-news h3 { font-size: 1.4rem; }
-.prose-news p { margin: 1.25rem 0; }
+.prose-news h2 { font-size: 1.75rem; }
+.prose-news h3 { font-size: 1.5rem; }
+.prose-news p { margin: 1rem 0; }
 .prose-news strong { color: var(--ink); font-weight: 700; }
-.prose-news a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; font-weight: 500; }
-.prose-news a:hover { color: #2b45cc; }
-.prose-news ul, .prose-news ol { padding-left: 1.5rem; margin: 1.25rem 0; }
+.prose-news a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; font-weight: 500; }
+.prose-news a:hover { color: #b91c1c; }
+.prose-news ul, .prose-news ol { padding-left: 1.5rem; margin: 1rem 0; }
 .prose-news ul { list-style: disc; }
 .prose-news ol { list-style: decimal; }
 .prose-news li { margin: 0.5rem 0; }
 .prose-news blockquote {
-  border-left: 4px solid var(--accent);
-  padding: 0.6rem 0 0.6rem 1.5rem;
+  border-left: 4px solid #cbd5e1;
+  padding: 0.5rem 0 0.5rem 1.25rem;
   color: #475467;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-style: italic;
-  font-family: Georgia, Cambria, "Times New Roman", Times, serif;
-  margin: 2rem 0;
-  background: #f1f5f9/50;
-  border-radius: 0 0.75rem 0.75rem 0;
+  margin: 1.5rem 0;
+  background: #f8fafc;
 }
 .prose-news pre {
-  background: #101828;
-  color: #e8eef7;
+  background: #1e293b;
+  color: #f8fafc;
   overflow-x: auto;
-  padding: 1.25rem 1.5rem;
-  border-radius: 1rem;
+  padding: 1.25rem;
   font-size: 0.9rem;
-  line-height: 1.7;
-  margin: 1.75rem 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  line-height: 1.6;
+  margin: 1.5rem 0;
 }
 .prose-news code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 .prose-news img {
-  border-radius: 1rem;
   width: 100%;
   height: auto;
-  margin: 2rem 0;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  margin: 1.5rem 0;
+}
+.prose-news figcaption {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
 }
 
 .news-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1.5rem; }
 
 @media (max-width: 767px) {
-  .container { width: min(100% - 1.5rem, 1220px); }
-  .prose-news { font-size: 1.05rem; line-height: 1.8; }
+  .container { width: min(100% - 1.5rem, 1280px); }
+  .prose-news { font-size: 1.05rem; line-height: 1.7; }
   .prose-news h2 { font-size: 1.5rem; }
   .prose-news h3 { font-size: 1.25rem; }
 }

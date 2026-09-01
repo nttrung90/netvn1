@@ -1,9 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ChevronRight, FolderOpen, ArrowLeft } from "lucide-react";
+import { ChevronRight, ArrowLeft } from "lucide-react";
 import { EmptyState } from "@/components/site/EmptyState";
 import { PostCard } from "@/components/site/PostCard";
-import { getPublishedPosts, getCategories } from "@/lib/data/posts";
+import { getPublishedPosts, getCategories, getHomeFeedData } from "@/lib/data/posts";
 
 export async function generateMetadata({
   params,
@@ -26,73 +26,99 @@ export default async function CategoryPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [result, categories] = await Promise.all([
+  const [result, categories, feedData] = await Promise.all([
     getPublishedPosts(1, 30, slug),
     getCategories(),
+    getHomeFeedData(), // fetch for sidebar
   ]);
 
   const currentCategory = categories.find((c) => c.slug === slug);
   const title = currentCategory?.name || result.posts[0]?.category?.name || "Chuyên mục";
-  const description = currentCategory?.description || "Các bài viết chọn lọc và phân tích chuyên sâu.";
+  const latestSidebar = feedData.latest.slice(0, 5);
 
   return (
     <main className="container py-8 md:py-12">
       {/* Breadcrumb */}
-      <nav aria-label="Đường dẫn" className="flex items-center gap-2 text-xs font-semibold text-slate-500">
-        <Link href="/" className="transition hover:text-[#4062ff]">
+      <nav aria-label="Đường dẫn" className="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-6">
+        <Link href="/" className="transition hover:text-[#d72626]">
           Trang chủ
         </Link>
-        <ChevronRight size={13} className="text-slate-400" />
-        <span className="text-slate-400">Chuyên đề</span>
         <ChevronRight size={13} className="text-slate-400" />
         <span className="text-slate-900 font-bold">{title}</span>
       </nav>
 
       {/* Category Hero Header */}
-      <div className="mt-6 rounded-3xl bg-white border border-slate-200/80 p-6 md:p-10 shadow-sm">
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#4062ff]">
-          <FolderOpen size={15} />
-          <span>Chuyên mục tin tức</span>
-        </div>
-        <h1 className="display mt-2 text-3xl font-bold text-[#101828] sm:text-4xl md:text-5xl">
+      <div className="border-b-2 border-[#d72626] pb-3 mb-8 flex justify-between items-end">
+        <h1 className="display text-3xl font-bold uppercase text-[#d72626]">
           {title}
         </h1>
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
-          {description}
-        </p>
-        <div className="mt-5 flex items-center gap-3 text-xs font-semibold text-slate-500">
-          <span className="rounded-lg bg-slate-100 px-2.5 py-1 text-slate-700 font-bold">
-            {result.total} bài viết
-          </span>
-        </div>
+        <span className="text-xs font-bold text-slate-500">
+          {result.total} bài viết
+        </span>
       </div>
 
-      {/* Posts Grid */}
-      {result.posts.length > 0 ? (
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {result.posts.map((post) => (
-            <PostCard key={post.id} post={post} variant="standard" />
-          ))}
+      <div className="flex flex-col lg:flex-row gap-10">
+        
+        {/* Main Feed */}
+        <div className="flex-1 lg:max-w-[850px]">
+          {result.posts.length > 0 ? (
+            <div className="flex flex-col gap-8">
+              {/* Featured Post (first one) */}
+              {result.posts[0] && (
+                <div className="mb-4">
+                  <PostCard post={result.posts[0]} variant="hero" />
+                </div>
+              )}
+              
+              {/* Rest of the posts */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {result.posts.slice(1).map((post) => (
+                  <PostCard key={post.id} post={post} variant="standard" />
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="mt-8">
+              <EmptyState
+                title="Chuyên mục chưa có bài viết"
+                description="Các bài viết mới cho chuyên mục này đang được ban biên tập biên soạn."
+              />
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="mt-8">
-          <EmptyState
-            title="Chuyên mục chưa có bài viết"
-            description="Các bài viết mới cho chuyên mục này đang được ban biên tập biên soạn."
-          />
-        </div>
-      )}
+
+        {/* Sidebar */}
+        <aside className="w-full lg:w-[320px] shrink-0">
+          <div className="sticky top-24">
+            <div className="bg-[#f8f9fa] border border-slate-200 p-5 rounded-md">
+              <h3 className="text-[16px] font-bold text-[#222] uppercase border-b border-gray-300 pb-2 mb-4">
+                Tin mới cập nhật
+              </h3>
+              <div className="flex flex-col gap-4">
+                {latestSidebar.length > 0 ? (
+                  latestSidebar.map((post, index) => (
+                    <PostCard key={post.id} post={post} variant="compact" />
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500">Đang cập nhật...</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </aside>
+
+      </div>
 
       {/* Navigation Footer */}
       <div className="mt-12 flex items-center justify-between border-t border-slate-200 pt-6">
         <Link
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#4062ff] transition hover:underline"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#d72626] transition hover:underline"
           href="/"
         >
           <ArrowLeft size={14} /> Về trang chủ
         </Link>
         <Link
-          className="text-xs font-bold text-slate-600 transition hover:text-[#4062ff]"
+          className="text-xs font-bold text-slate-600 transition hover:text-[#d72626]"
           href="/page/1"
         >
           Xem tất cả bài viết →

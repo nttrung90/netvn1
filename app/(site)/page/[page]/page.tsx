@@ -21,7 +21,7 @@ export default async function ArchivePage({
     <main className="container py-8 md:py-12">
       {/* Breadcrumb */}
       <nav aria-label="Đường dẫn" className="flex items-center gap-2 text-xs font-semibold text-slate-500">
-        <Link href="/" className="transition hover:text-[#4062ff]">
+        <Link href="/" className="transition hover:text-[#d72626]">
           Trang chủ
         </Link>
         <ChevronRight size={13} className="text-slate-400" />
@@ -29,8 +29,8 @@ export default async function ArchivePage({
       </nav>
 
       {/* Hero Header */}
-      <div className="mt-6 rounded-3xl bg-white border border-slate-200/80 p-6 md:p-10 shadow-sm">
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#4062ff]">
+      <div className="mt-6 rounded-md bg-white border border-slate-200/80 p-6 md:p-10 shadow-sm">
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#d72626]">
           <Archive size={15} />
           <span>Kho lưu trữ tòa soạn</span>
         </div>
@@ -51,7 +51,7 @@ export default async function ArchivePage({
               <Link
                 key={cat.id}
                 href={`/chu-de/${cat.slug}`}
-                className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-[#4062ff] hover:bg-[#edf0ff] hover:text-[#4062ff]"
+                className="rounded-sm border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-[#d72626] hover:bg-[#edf0ff] hover:text-[#d72626]"
               >
                 {cat.name}
               </Link>
@@ -86,7 +86,7 @@ export default async function ArchivePage({
       {/* Back to Home Link */}
       <div className="mt-12 border-t border-slate-200 pt-6">
         <Link
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#4062ff] transition hover:underline"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#d72626] transition hover:underline"
           href="/"
         >
           <ArrowLeft size={14} /> Về trang chủ
