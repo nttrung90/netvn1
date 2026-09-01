@@ -1,78 +1,81 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles, Flame, Zap, ChevronRight } from "lucide-react";
 import { EmptyState } from "@/components/site/EmptyState";
-import { PostCard } from "@/components/site/PostCard";
 import { getHomeFeedData } from "@/lib/data/posts";
+import { formatViDate } from "@/lib/utils";
 
 export default async function HomePage() {
   const { featured, latest, popular, sections } = await getHomeFeedData();
 
   const heroLead = featured[0];
-  const heroSecondaries = featured.slice(1, 3);
+  const heroSecondaries = featured.slice(1, 4);
 
   return (
-    <main className="pb-16">
-      {/* Editorial Announcement Bar & Headline */}
-      <section className="container pt-6 pb-8 md:pt-10 md:pb-10">
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-[#101828] px-5 py-3.5 text-xs text-slate-300 shadow-md">
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ccff00] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ccff00]"></span>
-            </span>
-            <span className="inline-flex items-center gap-1 font-bold uppercase tracking-widest text-[#ccff00]">
-              <Sparkles size={13} />
-              Tín hiệu mới
-            </span>
-            <span className="hidden text-slate-400 sm:inline">•</span>
-            <span className="hidden text-slate-200 sm:inline">
-              Ý tưởng, công cụ và góc nhìn giúp công nghệ phục vụ công việc tốt hơn.
-            </span>
-          </div>
-
-          <Link
-            href="/page/1"
-            className="inline-flex items-center gap-1 font-semibold text-slate-300 transition hover:text-white"
-          >
-            <span>Kho bài viết</span>
-            <ArrowRight size={13} />
-          </Link>
-        </div>
-
-        <div className="mt-8 flex flex-col justify-between gap-6 md:mt-12 md:flex-row md:items-end">
-          <div className="max-w-3xl">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#4062ff]">
-              Bản tin chọn lọc & Phân tích độc lập
-            </p>
-            <h1 className="display mt-3 text-4xl font-bold leading-[1.02] text-[#101828] sm:text-5xl md:text-6xl">
-              Công nghệ nên rõ ràng, <span className="text-[#4062ff] italic font-serif">hữu ích</span> và đáng tin.
-            </h1>
-          </div>
-          <Link
-            href="#moi-nhat"
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-[#101828] shadow-sm transition hover:border-[#4062ff] hover:text-[#4062ff]"
-          >
-            Khám phá bài mới <ArrowRight size={15} />
-          </Link>
-        </div>
-      </section>
-
-      {/* Featured Lead Section */}
-      <section className="container">
+    <main className="px-4 py-6 md:px-6">
+      
+      {/* Top Featured Section */}
+      <section className="mb-10">
         {featured.length > 0 ? (
-          <div className="grid gap-6 lg:grid-cols-12">
+          <div className="flex flex-col lg:flex-row gap-6">
+            
+            {/* Left Hero */}
             {heroLead && (
-              <div className={heroSecondaries.length ? "lg:col-span-7 xl:col-span-8" : "lg:col-span-12"}>
-                <PostCard post={heroLead} variant="hero" />
+              <div className="flex-1 lg:w-[65%] group">
+                <Link href={`/bai-viet/${heroLead.slug}`} className="block relative overflow-hidden bg-slate-100 rounded-sm">
+                  {heroLead.cover_image ? (
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={heroLead.cover_image}
+                      alt={heroLead.title}
+                      className="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full aspect-[16/10] bg-slate-200" />
+                  )}
+                </Link>
+                <div className="mt-4">
+                  <h2 className="text-2xl sm:text-3xl md:text-[32px] font-bold leading-[1.25] text-[#222] group-hover:text-[#4062ff] transition-colors">
+                    <Link href={`/bai-viet/${heroLead.slug}`}>
+                      {heroLead.title}
+                    </Link>
+                  </h2>
+                  {heroLead.excerpt && (
+                    <p className="mt-3 text-base text-[#555] line-clamp-3 leading-relaxed">
+                      {heroLead.excerpt}
+                    </p>
+                  )}
+                </div>
               </div>
             )}
+            
+            {/* Right List */}
             {heroSecondaries.length > 0 && (
-              <div className="flex flex-col gap-6 lg:col-span-5 xl:col-span-4">
+              <div className="w-full lg:w-[35%] flex flex-col gap-5">
                 {heroSecondaries.map((post) => (
-                  <PostCard key={post.id} post={post} variant="secondary" />
+                  <div key={post.id} className="group flex gap-4 lg:flex-row flex-row">
+                    <Link href={`/bai-viet/${post.slug}`} className="shrink-0 w-[140px] sm:w-[160px] lg:w-[130px] xl:w-[150px] block overflow-hidden rounded-sm bg-slate-100">
+                      {post.cover_image ? (
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={post.cover_image}
+                          alt={post.title}
+                          className="w-full aspect-[4/3] object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="w-full aspect-[4/3]" />
+                      )}
+                    </Link>
+                    <div className="flex-1">
+                      <h3 className="text-[15px] font-bold leading-snug text-[#222] group-hover:text-[#4062ff] transition-colors">
+                        <Link href={`/bai-viet/${post.slug}`} className="line-clamp-4">
+                          {post.title}
+                        </Link>
+                      </h3>
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
+            
           </div>
         ) : (
           <EmptyState
@@ -82,124 +85,134 @@ export default async function HomePage() {
         )}
       </section>
 
-      {/* Latest Stream & Trending Sidebar */}
-      <section
-        id="moi-nhat"
-        className="container mt-16 grid gap-10 lg:grid-cols-[minmax(0,1fr)_340px]"
-      >
-        {/* Left Column: Latest Stream */}
-        <div>
-          <div className="flex items-center justify-between border-b border-slate-200 pb-3.5">
-            <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#edf0ff] text-[#4062ff]">
-                <Zap size={16} />
-              </span>
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-widest text-[#4062ff]">
-                  Dòng chảy
-                </p>
-                <h2 className="display text-2xl font-bold text-[#101828]">Mới nhất</h2>
-              </div>
-            </div>
-            <Link
-              href="/page/1"
-              className="inline-flex items-center gap-1 text-xs font-bold text-slate-600 transition hover:text-[#4062ff]"
-            >
-              Xem tất cả <ChevronRight size={14} />
-            </Link>
+      {/* Main Content Area */}
+      <div className="flex flex-col lg:flex-row gap-8">
+        
+        {/* Left Stream */}
+        <div className="flex-1 lg:w-2/3">
+          <div className="border-b-2 border-[#4062ff] mb-5">
+            <h2 className="text-[18px] font-bold text-[#4062ff] uppercase tracking-wide py-1 inline-block">
+              Mới nhất
+            </h2>
           </div>
+          
+          <div className="flex flex-col">
+            {latest.length > 0 ? (
+              latest.map((post) => {
+                const categorySlug = post.category?.slug || "tin-cong-nghe";
+                const categoryName = post.category?.name || "Công nghệ";
+                const date = post.published_at ? formatViDate(post.published_at) : "";
 
-          {latest.length > 0 ? (
-            <div className="mt-6 grid gap-5 sm:grid-cols-2">
-              {latest.map((post) => (
-                <PostCard key={post.id} post={post} variant="standard" />
-              ))}
-            </div>
-          ) : (
-            <div className="mt-6">
+                return (
+                  <div key={post.id} className="group flex flex-col sm:flex-row gap-5 py-5 border-b border-gray-200 last:border-0">
+                    <Link href={`/bai-viet/${post.slug}`} className="shrink-0 sm:w-[240px] block overflow-hidden rounded-sm bg-slate-100">
+                      {post.cover_image ? (
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={post.cover_image}
+                          alt={post.title}
+                          className="w-full aspect-[16/10] object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="w-full aspect-[16/10]" />
+                      )}
+                    </Link>
+                    <div className="flex-1 flex flex-col justify-start">
+                      <h3 className="text-[20px] font-bold leading-snug text-[#222] group-hover:text-[#4062ff] transition-colors">
+                        <Link href={`/bai-viet/${post.slug}`} className="line-clamp-2">
+                          {post.title}
+                        </Link>
+                      </h3>
+                      <div className="flex items-center gap-3 mt-2 mb-2">
+                        <Link href={`/chu-de/${categorySlug}`} className="text-[12px] font-bold uppercase text-[#4062ff] hover:underline">
+                          {categoryName}
+                        </Link>
+                        <span className="text-[12px] text-[#999]">{date}</span>
+                      </div>
+                      {post.excerpt && (
+                        <p className="text-[14px] text-[#555] line-clamp-2 leading-relaxed">
+                          {post.excerpt}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
               <EmptyState title="Chưa có bài viết mới" description="Hãy khám phá các chuyên đề bên dưới." />
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
-        {/* Right Column: Trending Sidebar + Newsletter Widget */}
-        <aside className="space-y-8">
-          {/* Trending Box */}
-          <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm">
-            <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-amber-50 text-amber-600">
-                <Flame size={15} />
-              </span>
-              <h3 className="display text-lg font-bold text-[#101828]">
-                Đọc nhiều nhất
-              </h3>
-            </div>
-
-            <div className="mt-4 divide-y divide-slate-100">
+        {/* Right Sidebar */}
+        <aside className="w-full lg:w-[320px] shrink-0">
+          <div className="bg-[#f8f9fa] border border-gray-200 rounded-sm p-5">
+            <h3 className="text-[16px] font-bold text-[#222] uppercase border-b border-gray-300 pb-2 mb-4">
+              Đọc nhiều nhất
+            </h3>
+            <div className="flex flex-col gap-4">
               {popular.length > 0 ? (
                 popular.map((post, index) => (
-                  <PostCard key={post.id} post={post} variant="numbered" rank={index + 1} />
+                  <div key={post.id} className="group flex items-start gap-3">
+                    <span className="text-[24px] font-black text-[#ccc] italic leading-none w-6 text-center shrink-0">
+                      {index + 1}
+                    </span>
+                    <div className="flex-1">
+                      <h4 className="text-[14px] font-bold leading-snug text-[#222] group-hover:text-[#4062ff] transition-colors">
+                        <Link href={`/bai-viet/${post.slug}`} className="line-clamp-3">
+                          {post.title}
+                        </Link>
+                      </h4>
+                    </div>
+                  </div>
                 ))
               ) : (
-                <p className="py-6 text-center text-xs text-slate-500">
-                  Các bài đọc nhiều sẽ hiển thị khi có dữ liệu lượt đọc.
-                </p>
+                <p className="text-sm text-gray-500 py-4 text-center">Đang cập nhật dữ liệu</p>
               )}
             </div>
           </div>
-
-          {/* Editorial Callout Card */}
-          <div className="rounded-3xl bg-gradient-to-br from-[#101828] to-[#1e293b] p-6 text-white shadow-md">
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#ccff00]">
-              <Sparkles size={13} />
-              Bản tin độc quyền
-            </span>
-            <h4 className="display mt-2 text-xl font-bold">
-              Công nghệ phục vụ bạn, không phải ngược lại.
-            </h4>
-            <p className="mt-2 text-xs leading-relaxed text-slate-300">
-              Những tổng hợp ngắn gọn, không quảng cáo, tập trung vào hiệu quả và an toàn số.
-            </p>
-            <Link
-              href="/search"
-              className="mt-5 inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-xs font-bold text-[#101828] transition hover:bg-slate-100 active:scale-[.98]"
-            >
-              Tìm kiếm chủ đề quan tâm <ArrowRight size={14} />
-            </Link>
-          </div>
         </aside>
-      </section>
+      </div>
 
-      {/* Category Sections (Chuyên đề) - Guaranteed Non-Duplicate */}
-      {sections.map(({ category, posts }) => (
-        <section className="container mt-16" key={category.id}>
-          <div className="flex items-center justify-between border-b border-slate-200 pb-3.5">
-            <div className="flex items-center gap-2.5">
-              <div className="h-6 w-1 rounded-full bg-[#4062ff]" />
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-widest text-[#4062ff]">
-                  Chuyên đề
-                </p>
-                <h2 className="display text-2xl font-bold text-[#101828]">
-                  {category.name}
-                </h2>
-              </div>
+      {/* Sections */}
+      <div className="mt-10">
+        {sections.map(({ category, posts }) => (
+          <section key={category.id} className="mb-10">
+            <div className="border-b-2 border-[#4062ff] mb-5 flex items-center justify-between">
+              <h2 className="text-[18px] font-bold text-[#4062ff] uppercase tracking-wide py-1 inline-block">
+                {category.name}
+              </h2>
+              <Link href={`/chu-de/${category.slug}`} className="text-[13px] font-bold text-gray-500 hover:text-[#4062ff]">
+                Xem thêm
+              </Link>
             </div>
-            <Link
-              href={`/chu-de/${category.slug}`}
-              className="inline-flex items-center gap-1 text-xs font-bold text-slate-600 transition hover:text-[#4062ff]"
-            >
-              Xem chuyên mục <ChevronRight size={14} />
-            </Link>
-          </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {posts.map((post) => (
+                <div key={post.id} className="group flex flex-col">
+                  <Link href={`/bai-viet/${post.slug}`} className="block overflow-hidden rounded-sm bg-slate-100 mb-3">
+                    {post.cover_image ? (
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={post.cover_image}
+                        alt={post.title}
+                        className="w-full aspect-[16/10] object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full aspect-[16/10]" />
+                    )}
+                  </Link>
+                  <h3 className="text-[15px] font-bold leading-snug text-[#222] group-hover:text-[#4062ff] transition-colors">
+                    <Link href={`/bai-viet/${post.slug}`} className="line-clamp-3">
+                      {post.title}
+                    </Link>
+                  </h3>
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
 
-          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post) => (
-              <PostCard key={post.id} post={post} variant="standard" />
-            ))}
-          </div>
-        </section>
-      ))}
     </main>
   );
 }
