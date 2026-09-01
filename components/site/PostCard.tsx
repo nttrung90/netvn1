@@ -1,3 +1,4 @@
+import { getFirstImageFromHtml } from "@/lib/utils";
 import Link from "next/link";
 import { Clock, ArrowUpRight } from "lucide-react";
 import type { PostWithRelations } from "@/types/database";
@@ -27,6 +28,7 @@ export function PostCard({
   const formattedDate = formatViDate(post.published_at);
   const categoryName = post.category?.name || "Công nghệ";
   const categorySlug = post.category?.slug || "tin-cong-nghe";
+  const image = post.cover_image || getFirstImageFromHtml(post.content);
 
   // Backward compatibility
   const effectiveVariant: PostCardVariant = featured ? "hero" : variant;
@@ -67,13 +69,13 @@ export function PostCard({
   if (effectiveVariant === "compact") {
     return (
       <article className={`group flex items-center gap-4 rounded-md border border-slate-100 bg-white p-3.5 shadow-sm transition hover:border-slate-200 hover:shadow-md ${className}`}>
-        {post.cover_image ? (
+        {image ? (
           <div className="relative aspect-[4/3] w-24 shrink-0 overflow-hidden rounded-sm bg-slate-100">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               alt={post.title}
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              src={post.cover_image}
+              src={image}
               loading="lazy"
             />
           </div>
@@ -104,13 +106,13 @@ export function PostCard({
   if (effectiveVariant === "hero") {
     return (
       <article className={`group relative flex flex-col justify-between overflow-hidden rounded-md border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-xl md:p-8 ${className}`}>
-        {post.cover_image ? (
+        {image ? (
           <div className="relative aspect-[16/10] w-full overflow-hidden rounded-md bg-slate-100">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               alt={post.title}
               className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-              src={post.cover_image}
+              src={image}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           </div>
@@ -169,13 +171,13 @@ export function PostCard({
   if (effectiveVariant === "secondary") {
     return (
       <article className={`group flex flex-col justify-between rounded-md border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-lg ${className}`}>
-        {post.cover_image ? (
+        {image ? (
           <div className="relative aspect-[16/10] w-full overflow-hidden rounded-md bg-slate-100">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               alt={post.title}
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              src={post.cover_image}
+              src={image}
               loading="lazy"
             />
           </div>
@@ -221,13 +223,13 @@ export function PostCard({
   return (
     <article className={`group flex flex-col justify-between rounded-md border border-slate-100 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-200 hover:shadow-md ${className}`}>
       <div>
-        {post.cover_image ? (
+        {image ? (
           <div className="relative mb-3.5 aspect-[16/10] w-full overflow-hidden rounded-sm bg-slate-100">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               alt={post.title}
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              src={post.cover_image}
+              src={image}
               loading="lazy"
             />
           </div>

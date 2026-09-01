@@ -40,3 +40,9 @@ export function getSiteUrl() {
   const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   return (configuredUrl || "http://localhost:3000").replace(/\/$/, "");
 }
+
+export function getFirstImageFromHtml(html: string | null | undefined): string | null {
+  if (!html) return null;
+  const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+  return match ? match[1] : null;
+}

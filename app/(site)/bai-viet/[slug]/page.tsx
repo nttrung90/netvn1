@@ -7,7 +7,7 @@ import { getPostBySlug, getRelatedPosts, recordView } from "@/lib/data/posts";
 import { PostCard } from "@/components/site/PostCard";
 import { ReadingProgressBar } from "@/components/site/ReadingProgressBar";
 import { ShareButtons } from "@/components/site/ShareButtons";
-import { estimateReadingTime, formatViDate } from "@/lib/utils";
+import { estimateReadingTime, formatViDate, getFirstImageFromHtml } from "@/lib/utils";
 
 export async function generateMetadata({
   params,
@@ -104,15 +104,12 @@ export default async function ArticlePage({
         )}
 
         {/* Hero Image */}
-        {post.cover_image && (
+        {(post.cover_image || getFirstImageFromHtml(post.content)) && (
           <div className="relative mt-8 aspect-[16/9] w-full max-w-5xl overflow-hidden bg-slate-100">
-            <Image
+            <img
               alt={post.title}
-              className="object-cover"
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 1024px"
-              src={post.cover_image}
+              className="w-full h-full object-cover"
+              src={(post.cover_image || getFirstImageFromHtml(post.content)) as string}
             />
           </div>
         )}

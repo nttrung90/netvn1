@@ -1,8 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
-import Image from "next/image";
 import { EmptyState } from "@/components/site/EmptyState";
 import { getHomeFeedData } from "@/lib/data/posts";
-import { formatViDate } from "@/lib/utils";
+import { formatViDate, getFirstImageFromHtml } from "@/lib/utils";
 
 export default async function HomePage() {
   const { featured, latest, popular, sections } = await getHomeFeedData();
@@ -22,14 +22,14 @@ export default async function HomePage() {
             {heroLead && (
               <div className="flex-1 lg:w-[65%] group">
                 <Link href={`/bai-viet/${heroLead.slug}`} className="block relative overflow-hidden bg-slate-100 rounded-md aspect-[16/10] lg:aspect-[16/9]">
-                  {heroLead.cover_image && (
-                    <Image
-                      src={heroLead.cover_image}
+                  {(heroLead.cover_image || getFirstImageFromHtml(heroLead.content)) ? (
+                    <img
+                      src={(heroLead.cover_image || getFirstImageFromHtml(heroLead.content)) as string}
                       alt={heroLead.title}
-                      fill
-                      sizes="(max-width: 1024px) 100vw, 65vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
+                  ) : (
+                    <div className="w-full h-full bg-slate-200" />
                   )}
                 </Link>
                 <div className="mt-4">
@@ -50,33 +50,36 @@ export default async function HomePage() {
             {/* Right List */}
             {heroSecondaries.length > 0 && (
               <div className="w-full lg:w-[35%] flex flex-col gap-6">
-                {heroSecondaries.map((post) => (
-                  <div key={post.id} className="group flex gap-4">
-                    <Link href={`/bai-viet/${post.slug}`} className="shrink-0 w-[140px] block relative overflow-hidden rounded-sm bg-slate-100 aspect-[4/3]">
-                      {post.cover_image && (
-                        <Image
-                          src={post.cover_image}
-                          alt={post.title}
-                          fill
-                          sizes="140px"
-                          className="object-cover transition-transform duration-300 group-hover:scale-105"
-                        />
-                      )}
-                    </Link>
-                    <div className="flex-1">
-                      <h3 className="text-[16px] font-bold leading-[1.3] text-[#222] group-hover:text-[#d72626] transition-colors">
-                        <Link href={`/bai-viet/${post.slug}`} className="line-clamp-3">
-                          {post.title}
-                        </Link>
-                      </h3>
-                      {post.category && (
-                        <Link href={`/chu-de/${post.category.slug}`} className="text-[12px] font-bold uppercase text-[#d72626] hover:underline mt-2 inline-block">
-                          {post.category.name}
-                        </Link>
-                      )}
+                {heroSecondaries.map((post) => {
+                  const image = post.cover_image || getFirstImageFromHtml(post.content);
+                  return (
+                    <div key={post.id} className="group flex gap-4">
+                      <Link href={`/bai-viet/${post.slug}`} className="shrink-0 w-[140px] block relative overflow-hidden rounded-sm bg-slate-100 aspect-[4/3]">
+                        {image ? (
+                          <img
+                            src={image}
+                            alt={post.title}
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="w-full h-full" />
+                        )}
+                      </Link>
+                      <div className="flex-1">
+                        <h3 className="text-[16px] font-bold leading-[1.3] text-[#222] group-hover:text-[#d72626] transition-colors">
+                          <Link href={`/bai-viet/${post.slug}`} className="line-clamp-3">
+                            {post.title}
+                          </Link>
+                        </h3>
+                        {post.category && (
+                          <Link href={`/chu-de/${post.category.slug}`} className="text-[12px] font-bold uppercase text-[#d72626] hover:underline mt-2 inline-block">
+                            {post.category.name}
+                          </Link>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
             
@@ -106,18 +109,19 @@ export default async function HomePage() {
                 const categorySlug = post.category?.slug || "tin-cong-nghe";
                 const categoryName = post.category?.name || "Công nghệ";
                 const date = post.published_at ? formatViDate(post.published_at) : "";
+                const image = post.cover_image || getFirstImageFromHtml(post.content);
 
                 return (
                   <div key={post.id} className="group flex flex-col sm:flex-row gap-5 py-5 border-b border-gray-200 last:border-0">
                     <Link href={`/bai-viet/${post.slug}`} className="shrink-0 sm:w-[260px] block relative overflow-hidden rounded-sm bg-slate-100 aspect-[16/10]">
-                      {post.cover_image && (
-                        <Image
-                          src={post.cover_image}
+                      {image ? (
+                        <img
+                          src={image}
                           alt={post.title}
-                          fill
-                          sizes="(max-width: 640px) 100vw, 260px"
-                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         />
+                      ) : (
+                        <div className="w-full h-full" />
                       )}
                     </Link>
                     <div className="flex-1 flex flex-col justify-start">
@@ -192,58 +196,64 @@ export default async function HomePage() {
             
             {/* GenK style editorial section: 1 main large, 2-3 small */}
             <div className="flex flex-col lg:flex-row gap-8">
-              {posts[0] && (
-                <div className="flex-1 lg:w-1/2 group">
-                  <Link href={`/bai-viet/${posts[0].slug}`} className="block relative overflow-hidden rounded-sm bg-slate-100 mb-3 aspect-[16/10]">
-                    {posts[0].cover_image && (
-                      <Image
-                        src={posts[0].cover_image}
-                        alt={posts[0].title}
-                        fill
-                        sizes="(max-width: 1024px) 100vw, 50vw"
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                    )}
-                  </Link>
-                  <h3 className="text-[20px] font-bold leading-snug text-[#222] group-hover:text-[#d72626] transition-colors mt-3">
-                    <Link href={`/bai-viet/${posts[0].slug}`} className="line-clamp-3">
-                      {posts[0].title}
-                    </Link>
-                  </h3>
-                  {posts[0].excerpt && (
-                    <p className="mt-2 text-[14px] text-[#555] line-clamp-3 leading-relaxed">
-                      {posts[0].excerpt}
-                    </p>
-                  )}
-                </div>
-              )}
-              
-              <div className="flex-1 lg:w-1/2 flex flex-col gap-5">
-                {posts.slice(1, 4).map((post) => (
-                  <div key={post.id} className="group flex gap-4">
-                    <Link href={`/bai-viet/${post.slug}`} className="shrink-0 w-[140px] block relative overflow-hidden rounded-sm bg-slate-100 aspect-[4/3]">
-                      {post.cover_image && (
-                        <Image
-                          src={post.cover_image}
-                          alt={post.title}
-                          fill
-                          sizes="140px"
-                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+              {posts[0] && (() => {
+                const imgFirst = posts[0].cover_image || getFirstImageFromHtml(posts[0].content);
+                return (
+                  <div className="flex-1 lg:w-1/2 group">
+                    <Link href={`/bai-viet/${posts[0].slug}`} className="block relative overflow-hidden rounded-sm bg-slate-100 mb-3 aspect-[16/10]">
+                      {imgFirst ? (
+                        <img
+                          src={imgFirst}
+                          alt={posts[0].title}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         />
+                      ) : (
+                        <div className="w-full h-full" />
                       )}
                     </Link>
-                    <div className="flex-1">
-                      <h3 className="text-[15px] font-bold leading-snug text-[#222] group-hover:text-[#d72626] transition-colors">
-                        <Link href={`/bai-viet/${post.slug}`} className="line-clamp-3">
-                          {post.title}
-                        </Link>
-                      </h3>
-                      <span className="text-[12px] text-[#999] mt-2 block">
-                        {post.published_at ? formatViDate(post.published_at) : ""}
-                      </span>
-                    </div>
+                    <h3 className="text-[20px] font-bold leading-snug text-[#222] group-hover:text-[#d72626] transition-colors mt-3">
+                      <Link href={`/bai-viet/${posts[0].slug}`} className="line-clamp-3">
+                        {posts[0].title}
+                      </Link>
+                    </h3>
+                    {posts[0].excerpt && (
+                      <p className="mt-2 text-[14px] text-[#555] line-clamp-3 leading-relaxed">
+                        {posts[0].excerpt}
+                      </p>
+                    )}
                   </div>
-                ))}
+                );
+              })()}
+              
+              <div className="flex-1 lg:w-1/2 flex flex-col gap-5">
+                {posts.slice(1, 4).map((post) => {
+                  const image = post.cover_image || getFirstImageFromHtml(post.content);
+                  return (
+                    <div key={post.id} className="group flex gap-4">
+                      <Link href={`/bai-viet/${post.slug}`} className="shrink-0 w-[140px] block relative overflow-hidden rounded-sm bg-slate-100 aspect-[4/3]">
+                        {image ? (
+                          <img
+                            src={image}
+                            alt={post.title}
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="w-full h-full" />
+                        )}
+                      </Link>
+                      <div className="flex-1">
+                        <h3 className="text-[15px] font-bold leading-snug text-[#222] group-hover:text-[#d72626] transition-colors">
+                          <Link href={`/bai-viet/${post.slug}`} className="line-clamp-3">
+                            {post.title}
+                          </Link>
+                        </h3>
+                        <span className="text-[12px] text-[#999] mt-2 block">
+                          {post.published_at ? formatViDate(post.published_at) : ""}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
             
