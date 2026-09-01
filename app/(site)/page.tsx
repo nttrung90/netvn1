@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import { EmptyState } from "@/components/site/EmptyState";
 import { getHomeFeedData } from "@/lib/data/posts";
@@ -22,8 +23,8 @@ export default async function HomePage() {
               <div className="flex-1 lg:w-[65%] group">
                 <Link href={`/bai-viet/${heroLead.slug}`} className="block relative overflow-hidden bg-slate-100 rounded-sm">
                   {heroLead.cover_image ? (
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    
+                      <img
                       src={heroLead.cover_image}
                       alt={heroLead.title}
                       className="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-105"
@@ -54,8 +55,8 @@ export default async function HomePage() {
                   <div key={post.id} className="group flex gap-4 lg:flex-row flex-row">
                     <Link href={`/bai-viet/${post.slug}`} className="shrink-0 w-[140px] sm:w-[160px] lg:w-[130px] xl:w-[150px] block overflow-hidden rounded-sm bg-slate-100">
                       {post.cover_image ? (
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
+                        
+                          <img
                           src={post.cover_image}
                           alt={post.title}
                           className="w-full aspect-[4/3] object-cover transition-transform duration-300 group-hover:scale-105"
@@ -107,8 +108,8 @@ export default async function HomePage() {
                   <div key={post.id} className="group flex flex-col sm:flex-row gap-5 py-5 border-b border-gray-200 last:border-0">
                     <Link href={`/bai-viet/${post.slug}`} className="shrink-0 sm:w-[240px] block overflow-hidden rounded-sm bg-slate-100">
                       {post.cover_image ? (
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
+                        
+                          <img
                           src={post.cover_image}
                           alt={post.title}
                           className="w-full aspect-[16/10] object-cover transition-transform duration-300 group-hover:scale-105"
@@ -191,8 +192,8 @@ export default async function HomePage() {
                 <div key={post.id} className="group flex flex-col">
                   <Link href={`/bai-viet/${post.slug}`} className="block overflow-hidden rounded-sm bg-slate-100 mb-3">
                     {post.cover_image ? (
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
+                      
+                        <img
                         src={post.cover_image}
                         alt={post.title}
                         className="w-full aspect-[16/10] object-cover transition-transform duration-300 group-hover:scale-105"
