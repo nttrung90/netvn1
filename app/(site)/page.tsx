@@ -21,12 +21,12 @@ export default async function HomePage() {
             {/* Left Hero */}
             {heroLead && (
               <div className="flex-1 lg:w-[65%] group">
-                <Link href={`/bai-viet/${heroLead.slug}`} className="block relative overflow-hidden bg-slate-100 rounded-md">
+                <Link href={`/bai-viet/${heroLead.slug}`} className="block relative overflow-hidden bg-slate-100 rounded-md aspect-[16/10] lg:aspect-[16/9]">
                   {heroLead.cover_image ? (
                     <img
                       src={heroLead.cover_image}
                       alt={heroLead.title}
-                      className="w-full aspect-[16/10] lg:aspect-[16/9] object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
                     <div className="w-full aspect-[16/9] bg-slate-200" />
@@ -52,12 +52,12 @@ export default async function HomePage() {
               <div className="w-full lg:w-[35%] flex flex-col gap-6">
                 {heroSecondaries.map((post) => (
                   <div key={post.id} className="group flex gap-4">
-                    <Link href={`/bai-viet/${post.slug}`} className="shrink-0 w-[140px] block overflow-hidden rounded-sm bg-slate-100">
+                    <Link href={`/bai-viet/${post.slug}`} className="shrink-0 w-[140px] block overflow-hidden rounded-sm bg-slate-100 aspect-[4/3]">
                       {post.cover_image ? (
                         <img
                           src={post.cover_image}
                           alt={post.title}
-                          className="w-full aspect-[4/3] object-cover transition-transform duration-300 group-hover:scale-105"
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         />
                       ) : (
                         <div className="w-full aspect-[4/3]" />
@@ -109,12 +109,12 @@ export default async function HomePage() {
 
                 return (
                   <div key={post.id} className="group flex flex-col sm:flex-row gap-5 py-5 border-b border-gray-200 last:border-0">
-                    <Link href={`/bai-viet/${post.slug}`} className="shrink-0 sm:w-[260px] block overflow-hidden rounded-sm bg-slate-100">
+                    <Link href={`/bai-viet/${post.slug}`} className="shrink-0 sm:w-[260px] block overflow-hidden rounded-sm bg-slate-100 aspect-[16/10]">
                       {post.cover_image ? (
                         <img
                           src={post.cover_image}
                           alt={post.title}
-                          className="w-full aspect-[16/10] object-cover transition-transform duration-300 group-hover:scale-105"
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         />
                       ) : (
                         <div className="w-full aspect-[16/10]" />
@@ -194,12 +194,12 @@ export default async function HomePage() {
             <div className="flex flex-col lg:flex-row gap-8">
               {posts[0] && (
                 <div className="flex-1 lg:w-1/2 group">
-                  <Link href={`/bai-viet/${posts[0].slug}`} className="block overflow-hidden rounded-sm bg-slate-100 mb-3">
+                  <Link href={`/bai-viet/${posts[0].slug}`} className="block overflow-hidden rounded-sm bg-slate-100 mb-3 aspect-[16/10]">
                     {posts[0].cover_image ? (
                       <img
                         src={posts[0].cover_image}
                         alt={posts[0].title}
-                        className="w-full aspect-[16/10] object-cover transition-transform duration-300 group-hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                       />
                     ) : (
                       <div className="w-full aspect-[16/10]" />
@@ -221,12 +221,12 @@ export default async function HomePage() {
               <div className="flex-1 lg:w-1/2 flex flex-col gap-5">
                 {posts.slice(1, 4).map((post) => (
                   <div key={post.id} className="group flex gap-4">
-                    <Link href={`/bai-viet/${post.slug}`} className="shrink-0 w-[140px] block overflow-hidden rounded-sm bg-slate-100">
+                    <Link href={`/bai-viet/${post.slug}`} className="shrink-0 w-[140px] block overflow-hidden rounded-sm bg-slate-100 aspect-[4/3]">
                       {post.cover_image ? (
                         <img
                           src={post.cover_image}
                           alt={post.title}
-                          className="w-full aspect-[4/3] object-cover transition-transform duration-300 group-hover:scale-105"
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         />
                       ) : (
                         <div className="w-full aspect-[4/3]" />

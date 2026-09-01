@@ -42,12 +42,19 @@ export async function SiteHeader() {
             )}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <Link
               className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-[#d72626] hover:text-white"
               href="/search"
             >
               <Search size={18} />
+            </Link>
+
+            <Link
+              className="inline-flex items-center gap-1.5 rounded-md bg-[#222] px-3.5 h-10 text-xs font-bold text-white shadow-sm transition hover:bg-[#d72626] active:scale-[.98]"
+              href="/login"
+            >
+              <span className="hidden sm:inline">Quản trị</span>
             </Link>
             
             <button className="lg:hidden flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600">
