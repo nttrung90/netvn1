@@ -21,6 +21,7 @@ export function AdminShell({
              <Link href="/admin/posts">Bài viết</Link>
              <Link href="/admin/categories">Chuyên mục</Link>
              <Link href="/admin/tags">Thẻ</Link>
+             <Link href="/admin/users">Tài khoản</Link>
              <Link href="/">Xem trang tin</Link>
              <form action={logout}><button className="rounded-lg border border-[#d0d5dd] px-3 py-1.5 text-xs font-bold text-[#475467] hover:border-[#d72626]">Đăng xuất</button></form>
            </nav>

@@ -1,5 +1,6 @@
 export type Role = "admin" | "editor" | "reader";
 export type PostStatus = "draft" | "published";
+export type UserStatus = "pending" | "approved" | "rejected";
 
 export type Profile = {
   id: string;
@@ -7,6 +8,7 @@ export type Profile = {
   name: string | null;
   avatar: string | null;
   role: Role;
+  status: UserStatus;
   created_at: string;
   updated_at: string;
 };
@@ -55,4 +57,13 @@ export type PaginatedPosts = {
   page: number;
   pageSize: number;
   pageCount: number;
+};
+
+export type Comment = {
+  id: string;
+  post_id: string;
+  email: string;
+  name: string | null;
+  content: string;
+  created_at: string;
 };

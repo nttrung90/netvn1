@@ -1,10 +1,18 @@
 import Link from "next/link";
-import { Search, Menu } from "lucide-react";
+import { Search, Menu, UserCheck, LogIn, LayoutDashboard } from "lucide-react";
 import { Logo } from "./Logo";
 import { getCategories } from "@/lib/data/posts";
+import { getCurrentUser } from "@/lib/auth";
 
 export async function SiteHeader() {
-  const categories = await getCategories();
+  const [categories, currentUser] = await Promise.all([
+    getCategories(),
+    getCurrentUser(),
+  ]);
+
+  const user = currentUser?.user;
+  const profile = currentUser?.profile;
+  const isStaff = profile?.role === "admin" || profile?.role === "editor";
 
   return (
     <header className="sticky top-0 z-40 border-b-2 border-[#d72626] bg-white transition-all shadow-sm">
@@ -46,16 +54,38 @@ export async function SiteHeader() {
             <Link
               className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-[#d72626] hover:text-white"
               href="/search"
+              aria-label="Tìm kiếm"
             >
               <Search size={18} />
             </Link>
 
-            <Link
-              className="inline-flex items-center gap-1.5 rounded-md bg-[#222] px-3.5 h-10 text-xs font-bold text-white shadow-sm transition hover:bg-[#d72626] active:scale-[.98]"
-              href="/login"
-            >
-              <span className="hidden sm:inline">Quản trị</span>
-            </Link>
+            {user ? (
+              isStaff ? (
+                <Link
+                  className="inline-flex items-center gap-1.5 rounded-md bg-[#222] px-3.5 h-10 text-xs font-bold text-white shadow-sm transition hover:bg-[#d72626] active:scale-[.98]"
+                  href="/admin"
+                >
+                  <LayoutDashboard size={14} className="text-[#d72626]" />
+                  <span className="hidden sm:inline">Quản trị</span>
+                </Link>
+              ) : (
+                <Link
+                  className="inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-3.5 h-10 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-200 active:scale-[.98]"
+                  href="/admin"
+                >
+                  <UserCheck size={14} className="text-emerald-600" />
+                  <span className="hidden sm:inline">{profile?.name || "Tài khoản"}</span>
+                </Link>
+              )
+            ) : (
+              <Link
+                className="inline-flex items-center gap-1.5 rounded-md bg-[#222] px-3.5 h-10 text-xs font-bold text-white shadow-sm transition hover:bg-[#d72626] active:scale-[.98]"
+                href="/login"
+              >
+                <LogIn size={14} />
+                <span className="hidden sm:inline">Đăng nhập</span>
+              </Link>
+            )}
             
             <button className="lg:hidden flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600">
               <Menu size={18} />

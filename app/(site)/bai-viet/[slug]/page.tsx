@@ -4,9 +4,12 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Clock, Calendar, ChevronRight, BookOpen } from "lucide-react";
 import { getPostBySlug, getRelatedPosts, recordView } from "@/lib/data/posts";
+import { getCommentsByPostId } from "@/lib/data/comments";
+import { getCurrentUser } from "@/lib/auth";
 import { PostCard } from "@/components/site/PostCard";
 import { ReadingProgressBar } from "@/components/site/ReadingProgressBar";
 import { ShareButtons } from "@/components/site/ShareButtons";
+import { CommentSection } from "@/components/site/CommentSection";
 import { estimateReadingTime, formatViDate, getFirstImageFromHtml } from "@/lib/utils";
 
 export async function generateMetadata({
@@ -39,8 +42,12 @@ export default async function ArticlePage({
   const post = await getPostBySlug(slug);
   if (!post) notFound();
   
-  // Get 5 related posts for the sidebar
-  const related = await getRelatedPosts(post, 5);
+  // Get 5 related posts for the sidebar, comments, and current user
+  const [related, comments, currentUser] = await Promise.all([
+    getRelatedPosts(post, 5),
+    getCommentsByPostId(post.id),
+    getCurrentUser(),
+  ]);
   await recordView(slug);
 
   const readTime = estimateReadingTime(post.content || post.excerpt);
@@ -160,6 +167,14 @@ export default async function ArticlePage({
                 </div>
               </div>
             </div>
+
+            {/* Comment Section */}
+            <CommentSection
+              postId={post.id}
+              postSlug={post.slug}
+              initialComments={comments}
+              isAdmin={currentUser?.profile?.role === "admin"}
+            />
           </div>
 
           {/* Sidebar */}

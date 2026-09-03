@@ -8,6 +8,8 @@ import { requireAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/utils";
 import type { PostActionState } from "@/types/actions";
+import type { Role, Comment } from "@/types/database";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 const postSchema = z.object({ title: z.string().trim().min(3).max(180), excerpt: z.string().trim().max(400).optional(), content: z.string().trim().min(1), coverImage: z.string().url().optional().or(z.literal("")), categoryId: z.string().uuid().optional().or(z.literal("")), status: z.enum(["draft", "published"]), tags: z.string().max(300).optional() });
 const categorySchema = z.object({ name: z.string().trim().min(2).max(80), description: z.string().trim().max(240).optional() });
@@ -174,3 +176,113 @@ export async function logout() {
   await supabase.auth.signOut();
   redirect("/login");
 }
+
+export async function addCommentAction(
+  postId: string,
+  postSlug: string,
+  formData: FormData
+): Promise<{ error?: string; comment?: Comment }> {
+  try {
+    const email = String(formData.get("email") || "").trim();
+    const content = String(formData.get("content") || "").trim();
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return { error: "Địa chỉ email không hợp lệ." };
+    }
+    if (!content || content.length < 2) {
+      return { error: "Nội dung bình luận quá ngắn." };
+    }
+    if (content.length > 2000) {
+      return { error: "Nội dung bình luận không được vượt quá 2000 ký tự." };
+    }
+
+    const sanitized = sanitizeHtml(content, {
+      allowedTags: [],
+      allowedAttributes: {},
+    });
+
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("comments")
+      .insert({
+        post_id: postId,
+        email,
+        content: sanitized,
+      })
+      .select("id, post_id, email, name, content, created_at")
+      .single();
+
+    if (error) {
+      console.error("Failed to insert comment:", error);
+      return { error: "Không thể gửi bình luận. Vui lòng thử lại sau." };
+    }
+
+    revalidatePath(`/bai-viet/${postSlug}`);
+    return { comment: data as Comment };
+  } catch (err) {
+    console.error("Error in addCommentAction:", err);
+    return { error: "Đã xảy ra lỗi khi gửi bình luận." };
+  }
+}
+
+export async function deleteCommentAction(commentId: string, postSlug: string) {
+  await requireAdmin();
+  const supabase = await createClient();
+  const { error } = await supabase.from("comments").delete().eq("id", commentId);
+  if (error) throw new Error(error.message);
+  revalidatePath(`/bai-viet/${postSlug}`);
+  return { success: true };
+}
+
+export async function approveUser(userId: string, role: Role = "reader") {
+  await requireAdmin();
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("profiles")
+    .update({ status: "approved", role, updated_at: new Date().toISOString() })
+    .eq("id", userId);
+
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin/users");
+}
+
+export async function rejectUser(userId: string) {
+  await requireAdmin();
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("profiles")
+    .update({ status: "rejected", updated_at: new Date().toISOString() })
+    .eq("id", userId);
+
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin/users");
+}
+
+export async function updateUserRole(userId: string, role: Role) {
+  await requireAdmin();
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("profiles")
+    .update({ role, updated_at: new Date().toISOString() })
+    .eq("id", userId);
+
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin/users");
+}
+
+export async function deleteUser(userId: string) {
+  await requireAdmin();
+  const supabase = await createClient();
+  const { error } = await supabase.from("profiles").delete().eq("id", userId);
+  if (error) throw new Error(error.message);
+
+  try {
+    const adminClient = createAdminClient();
+    await adminClient.auth.admin.deleteUser(userId);
+  } catch (e) {
+    console.warn("Could not delete from auth.users (service role key may not be configured):", e);
+  }
+
+  revalidatePath("/admin/users");
+}
+
