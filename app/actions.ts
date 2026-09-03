@@ -225,13 +225,23 @@ export async function addCommentAction(
   }
 }
 
-export async function deleteCommentAction(commentId: string, postSlug: string) {
-  await requireAdmin();
-  const supabase = await createClient();
-  const { error } = await supabase.from("comments").delete().eq("id", commentId);
-  if (error) throw new Error(error.message);
-  revalidatePath(`/bai-viet/${postSlug}`);
-  return { success: true };
+export async function deleteCommentAction(
+  commentId: string,
+  postSlug: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    await requireAdmin();
+    const supabase = await createClient();
+    const { error } = await supabase.from("comments").delete().eq("id", commentId);
+    if (error) return { success: false, error: error.message };
+    revalidatePath(`/bai-viet/${postSlug}`);
+    return { success: true };
+  } catch (err) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Không thể xóa bình luận",
+    };
+  }
 }
 
 export async function approveUser(userId: string, role: Role = "reader") {

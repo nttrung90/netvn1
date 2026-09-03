@@ -75,8 +75,10 @@ export function CommentSection({
     if (!confirm("Bạn có chắc chắn muốn xóa bình luận này?")) return;
     startTransition(async () => {
       const result = await deleteCommentAction(commentId, postSlug);
-      if (!result.error) {
+      if (result.success) {
         setComments((prev) => prev.filter((c) => c.id !== commentId));
+      } else if (result.error) {
+        alert(result.error);
       }
     });
   }
